@@ -1,0 +1,700 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
+  <am:AuthoringMetadata>
+    <am:CreatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.9.34728.123</am:Version>
+    </am:CreatedBy>
+    <am:UpdatedBy>
+      <am:Name>SSDTRS</am:Name>
+      <am:Version>17.9.34728.123</am:Version>
+    </am:UpdatedBy>
+    <am:LastModifiedTimestamp>2024-05-14T15:17:31.7157631Z</am:LastModifiedTimestamp>
+  </am:AuthoringMetadata>
+  <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="Servidor">
+      <DataSourceReference>Servidor</DataSourceReference>
+      <rd:SecurityType>None</rd:SecurityType>
+      <rd:DataSourceID>1b8f1f89-8d77-47ea-876f-dd5284f66791</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="dsListaBasesDatos">
+      <Query>
+        <DataSourceName>Servidor</DataSourceName>
+        <CommandText>-- Lista Bases de datos del server.
+SELECT IDBaseDatos = DB.DATABASE_ID
+	 , BaseDatos   = DB.NAME
+  FROM MASTER.SYS.DATABASES DB
+ WHERE DB.NAME NOT IN ('master', 'tempdb', 'model', 'msdb')
+ ORDER BY DB.NAME;</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="IDBaseDatos">
+          <DataField>IDBaseDatos</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="BaseDatos">
+          <DataField>BaseDatos</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="dsListaEsquemas">
+      <Query>
+        <DataSourceName>Servidor</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@pBaseDatos">
+            <Value>=Parameters!pBaseDatos.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>-- Lista de los esquemas una bases de datos.
+DECLARE @vSQL VARCHAR(MAX) = '';
+SET @vSQL = 'SELECT IDEsquema = E.SCHEMA_ID
+		      	  , Esquema	  = E.NAME
+		       FROM ' + @pBaseDatos + '.SYS.SCHEMAS E
+		      WHERE E.NAME NOT IN (''guest'', ''INFORMATION_SCHEMA'', ''sys'')
+		        AND E.NAME NOT LIKE ''db__%''
+	          ORDER BY E.NAME;'
+
+EXEC (@vSQL); </CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <Fields>
+        <Field Name="IDEsquema">
+          <DataField>IDEsquema</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Esquema">
+          <DataField>Esquema</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="dsListaProcedimentosFunciones">
+      <Query>
+        <DataSourceName>Servidor</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@pBaseDatos">
+            <Value>=Parameters!pBaseDatos.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@pEsquemas">
+            <Value>=Parameters!pEsquemas.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>-- Lista de los procedimientos almacenados y las funciones de una base de datos.
+
+DROP TABLE IF EXISTS #DiccionarioTemp;
+
+CREATE TABLE #DiccionarioTemp(
+	   IDEsquema INT 
+	 , IDObjeto	 INT
+	 , Objeto	 VARCHAR(MAX)
+	);
+	
+DECLARE @vSQL VARCHAR(MAX) = '';
+SET @vSQL = 'INSERT INTO #DiccionarioTemp ( IDEsquema
+										  , IDObjeto
+										  , Objeto)
+				SELECT IDEsquema = CONVERT(INT, O.SCHEMA_ID)
+					 , IDObjeto	 = CONVERT(INT, O.OBJECT_ID)
+					 , Objeto	 = CONVERT(VARCHAR(MAX), O.NAME)
+				  FROM ' + @pBaseDatos + '.SYS.OBJECTS O
+			     WHERE O.TYPE IN (''P'', ''AF'', ''FN'', ''FS'', ''FT'', ''IF'', ''TF'')
+				   AND O.NAME NOT LIKE ''%DIAGRAM%'';'
+	
+EXEC (@vSQL); 
+	
+SELECT IDEsquema 
+	 , IDObjeto 
+	 , Objeto 
+  FROM #DiccionarioTemp 
+ WHERE IDEsquema IN (@pEsquemas) 
+ ORDER BY Objeto; 
+	
+DROP TABLE #DiccionarioTemp; </CommandText>
+      </Query>
+      <Fields>
+        <Field Name="IDEsquema">
+          <DataField>IDEsquema</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="IDObjeto">
+          <DataField>IDObjeto</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Objeto">
+          <DataField>Objeto</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+    <DataSet Name="dsParametros">
+      <Query>
+        <DataSourceName>Servidor</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@pBaseDatos">
+            <Value>=Parameters!pBaseDatos.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@pEsquemas">
+            <Value>=Parameters!pEsquemas.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@pObjetos">
+            <Value>=Parameters!pObjetos.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>-- Parámetros de los procedimientos y funciones de una base de datos. 
+
+DECLARE @vSQL VARCHAR(MAX) = '';
+
+DROP TABLE IF EXISTS #DiccionarioTemp;
+
+CREATE TABLE #DiccionarioTemp(
+	   IDEsquema		INT 
+	 , Esquema			VARCHAR(MAX) 
+	 , IDObjeto			INT 
+	 , Objeto			VARCHAR(MAX) 
+	 , TipoObjeto		VARCHAR(MAX) 
+	 , IDParametro		INT 
+	 , Parametro		VARCHAR(MAX) 
+	 , TipoDato			VARCHAR(MAX) 
+	 , TamanioParametro VARCHAR(MAX) 
+	 , EsSalida			BIT
+	);
+SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema 
+										   , Esquema 
+										   , IDObjeto 
+										   , Objeto 	 			
+										   , TipoObjeto 
+										   , IDParametro 
+										   , Parametro 
+										   , TipoDato 
+										   , TamanioParametro 
+										   , EsSalida 
+										   ) 
+			 SELECT IDEsquema		 = CONVERT(INT, E.SCHEMA_ID)
+				  , Esquema			 = CONVERT(VARCHAR(MAX), E.NAME) 
+				  , IDObjeto		 = CONVERT(INT, O.OBJECT_ID)
+				  , Objeto			 = CONVERT(VARCHAR(MAX), O.NAME) 
+				  , TipoObjeto	     = CONVERT(VARCHAR(MAX), O.TYPE) 
+				  , IDParametro		 = CONVERT(INT, P.PARAMETER_ID)
+				  , Parametro		 = CASE P.PARAMETER_ID WHEN 0 THEN ''Return'' ELSE CONVERT(VARCHAR(MAX), P.NAME) END
+				  , TipoDato		 = CONVERT(VARCHAR(MAX), TYPE_NAME(P.USER_TYPE_ID))
+				  , TamanioParametro = CASE P.MAX_LENGTH WHEN -1 THEN ''MAX'' ELSE CONVERT(VARCHAR(MAX), P.MAX_LENGTH) END
+				  , EsSalida		 = P.IS_OUTPUT 
+ 			   FROM ' + @pBaseDatos + '.SYS.SCHEMAS E
+			  INNER JOIN ' + @pBaseDatos + '.SYS.OBJECTS O
+				 ON E.SCHEMA_ID = o.SCHEMA_ID
+				AND O.TYPE IN (''P'', ''AF'', ''FN'', ''FS'', ''FT'', ''IF'', ''TF'')
+				AND O.NAME NOT LIKE ''%DIAGRAM%''
+			   LEFT JOIN ' + @pBaseDatos + '.SYS.PARAMETERS P
+			     ON P.OBJECT_ID = O.OBJECT_ID;'
+ EXEC (@vSQL); 
+
+SELECT IDEsquema 
+	 , Esquema 
+	 , IDObjeto 
+	 , Objeto 
+	 , TipoObjeto 
+	 , IDParametro 
+	 , Parametro 
+	 , TipoDato 
+	 , TamanioParametro 
+	 , EsSalida 
+  FROM #DiccionarioTemp 
+ WHERE IDEsquema IN (@pEsquemas)
+   AND IDObjeto  IN (@pObjetos)
+ ORDER BY Esquema, Objeto, IDParametro;
+
+DROP TABLE #DiccionarioTemp;</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="IDEsquema">
+          <DataField>IDEsquema</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Esquema">
+          <DataField>Esquema</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IDObjeto">
+          <DataField>IDObjeto</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Objeto">
+          <DataField>Objeto</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TipoObjeto">
+          <DataField>TipoObjeto</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IDParametro">
+          <DataField>IDParametro</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Parametro">
+          <DataField>Parametro</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TipoDato">
+          <DataField>TipoDato</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="TamanioParametro">
+          <DataField>TamanioParametro</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="EsSalida">
+          <DataField>EsSalida</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Tablix Name="tablaParametros">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>1.97917in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>1.68045in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.79167in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>0.72917in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox10">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Parámetro</Value>
+                                  <Style>
+                                    <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <ListLevel>1</ListLevel>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox8</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#e8f1ff</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox6">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Tipo Dato</Value>
+                                  <Style>
+                                    <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox5</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#e8f1ff</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox12">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Tamaño</Value>
+                                  <Style>
+                                    <FontSize>12pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox7</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#e8f1ff</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox3">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Salida</Value>
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox2</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#e8f1ff</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Parametro1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Parametro.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <ListLevel>1</ListLevel>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Parametro1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TipoDato1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TipoDato.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>TipoDato1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="TamanioParametro1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!TamanioParametro.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>TamanioParametro1</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="EsSalida2">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Label>EsSalida</Label>
+                                  <Value>=iif(Fields!EsSalida.Value = 1, "Sí", "No")</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>EsSalida</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <KeepWithGroup>After</KeepWithGroup>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Detalles" />
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!IDParametro.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>dsParametros</DataSetName>
+            <Height>0.65in</Height>
+            <Width>5.18046in</Width>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
+        </ReportItems>
+        <Height>0.65in</Height>
+        <Style />
+      </Body>
+      <Width>5.18046in</Width>
+      <Page>
+        <PageHeight>8.5in</PageHeight>
+        <PageWidth>11in</PageWidth>
+        <LeftMargin>0.2in</LeftMargin>
+        <RightMargin>0.2in</RightMargin>
+        <TopMargin>0.2in</TopMargin>
+        <BottomMargin>0.2in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="pBaseDatos">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>dsListaBasesDatos</DataSetName>
+          <ValueField>BaseDatos</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Base de Datos:</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>dsListaBasesDatos</DataSetName>
+          <ValueField>BaseDatos</ValueField>
+          <LabelField>BaseDatos</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="pEsquemas">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>dsListaEsquemas</DataSetName>
+          <ValueField>IDEsquema</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Esquemas:</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>dsListaEsquemas</DataSetName>
+          <ValueField>IDEsquema</ValueField>
+          <LabelField>Esquema</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+    <ReportParameter Name="pObjetos">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <DataSetReference>
+          <DataSetName>dsListaProcedimentosFunciones</DataSetName>
+          <ValueField>IDObjeto</ValueField>
+        </DataSetReference>
+      </DefaultValue>
+      <Prompt>Porcedimiento o Función:</Prompt>
+      <ValidValues>
+        <DataSetReference>
+          <DataSetName>dsListaProcedimentosFunciones</DataSetName>
+          <ValueField>IDObjeto</ValueField>
+          <LabelField>Objeto</LabelField>
+        </DataSetReference>
+      </ValidValues>
+    </ReportParameter>
+  </ReportParameters>
+  <ReportParametersLayout>
+    <GridLayoutDefinition>
+      <NumberOfColumns>3</NumberOfColumns>
+      <NumberOfRows>1</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>pBaseDatos</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>pEsquemas</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>pObjetos</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
+    </GridLayoutDefinition>
+  </ReportParametersLayout>
+  <EmbeddedImages>
+    <EmbeddedImage Name="pk">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA59JREFUeNrMV01sE0cU/tY7693WhmyISQMOP6qiwAGhRZVoDyjUIMSBnxghJDi1VqUeOSGuhCMcOIM4ILhXQFRUKn6cCIFKZMACjCCEYCkkENIoGxP/7+zwdm0EWJWMHXfbkUYzs/Nm3zff++bNLvAfF+lLDfmIb8CygFK5ppb+ub/9sD3QMgDkPAr924vo6IGw22CLNgihu61NrUB1DBWCz2P83mlMjd7ct/uofaneu9mXALBt9MshDqn9DxoJTCRiuHb2ZJoG52UZCHXipy2H9q9d1nOcjP1YsW4b0qmb/TTfGgBcRpQFD5HvDI2KeDv2HOEwzus6hjTNNVnDs9M/w35DNkV0rdEB+esosBBbdAiyt3xReTkuqj1DZN1JT0qwcrcxnfoLTOZgzIKicgS7v4NPCRMAEgKfwp0rgxh9kNgXOyEuLYoBEl6/GuqrmIrKDpkaRnjTHrfvVgIFm1pemYedwTqjG49HEnXDUBcAB6LyV2Tm0IuqQ2eXTmslyfcItS9oPu/Ig6pw2w7dgBYM1A1DXQClAtLZVzeMQDfRi6WEaJTqZNVpoeoUnzl36ngqhdkZK71oEZYsxGaeSXFZu6BrQedIoMbpJ86rcxkT+PN3y6TTU1eEvnoGq/fYyUIOsYmkBF6sceo4tEW1fnw++JuEHK05ckYkW5YJE+d8A+UythbL0IPtMKZMgdGndAZFAb3rNYQ7C7h7G0NOFiThDpPzgZam4g/l6infj3oI8bm8wNjzAAHIoqe3DR1t77D5IG/4fazRBcQC8jnyS5T7/bJLPWMauCNI58w0WHyNLuAcydkZRBbmAZUAqH5AUVTYXGnqNmwYQLEEY8PmlfHlXd9UACgfGGBNAWg8BHQlz0xNgpccBrpc1hUCkC96xEChKJJP
+HiGSz+IjAxQCzj1igNswfugLx0sFC6Ypu1tQFCcEHjHALSSHr09G5t5OEwOMGJBcDdhNAmDNiLBvW1fczyRkc7KbSSoMMG8YIBGaucybIavw+hMNeBgCYsBM3MewVa7JA14dQ8rza5cuwbFVdDtny7J7+TB/8ww0lQecz3PFV03FvKIBzxio3nakfAqBRACcvuL3ngFHfLKcdT9EGCvTXVD2RoQWR/rlBMzpvwUC8hMElrRjcjaEy4Mp07P/uVhEMn7dIc29vKyIhYd7xS87O+Z2bZSMf/XfsLYc+F4ylrWrcU1TMTaeiVx5WP/zq+XF2XWzO//flPcCDADSnLP2tpzpkQAAAABJRU5ErkJggg==</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>es-ES</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>58c8e102-3d66-47f4-a3e5-ac92fb5571f6</rd:ReportID>
+</Report>

@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "Diccionario_Datos", "Diccionario_Datos.rptproj", "{5CDCD6D2-3744-491D-97A2-51938736C09C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{810130AD-CFE4-4698-8A65-BA95D9F9A959}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\CreaBaseEjemplo.sql = Scripts\CreaBaseEjemplo.sql
+		Scripts\dsBaseDatos.sql = Scripts\dsBaseDatos.sql
+		Scripts\dsEsquemas.sql = Scripts\dsEsquemas.sql
+		Scripts\dsEtiquetas.sql = Scripts\dsEtiquetas.sql
+		Scripts\dsFunciones.sql = Scripts\dsFunciones.sql
+		Scripts\dsListaBasesDatos.sql = Scripts\dsListaBasesDatos.sql
+		Scripts\dsListaEsquemas.sql = Scripts\dsListaEsquemas.sql
+		Scripts\dsListaFunciones.sql = Scripts\dsListaFunciones.sql
+		Scripts\dsListaProcedimientos.sql = Scripts\dsListaProcedimientos.sql
+		Scripts\dsListaProcedimentosFunciones.sql = Scripts\dsListaProcedimentosFunciones.sql
+		Scripts\dsListaTablas.sql = Scripts\dsListaTablas.sql
+		Scripts\dsListaVistas.sql = Scripts\dsListaVistas.sql
+		Scripts\dsProcedimientos.sql = Scripts\dsProcedimientos.sql
+		Scripts\dsPrametros.sql = Scripts\dsPrametros.sql
+		Scripts\dsTablas.sql = Scripts\dsTablas.sql
+		Scripts\dsTablasCampos.sql = Scripts\dsTablasCampos.sql
+		Scripts\dsTablasIndices.sql = Scripts\dsTablasIndices.sql
+		Scripts\dsTablasLlaves.sql = Scripts\dsTablasLlaves.sql
+		Scripts\dsVistas.sql = Scripts\dsVistas.sql
+		Scripts\dsVistasCampos.sql = Scripts\dsVistasCampos.sql
+		Tipos_Objetos.txt = Tipos_Objetos.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
+		DebugLocal|Default = DebugLocal|Default
+		Release|Default = Release|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.Debug|Default.ActiveCfg = Debug
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.Debug|Default.Build.0 = Debug
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.Debug|Default.Deploy.0 = Debug
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.DebugLocal|Default.ActiveCfg = DebugLocal
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.DebugLocal|Default.Build.0 = DebugLocal
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.Release|Default.ActiveCfg = Release
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.Release|Default.Build.0 = Release
+		{5CDCD6D2-3744-491D-97A2-51938736C09C}.Release|Default.Deploy.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F358FC1-67D4-489B-9B57-E03807522DCE}
+	EndGlobalSection
+EndGlobal
