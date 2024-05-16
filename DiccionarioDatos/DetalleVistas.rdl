@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34728.123</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-14T15:34:59.7177500Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-15T20:12:52.5168160Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -455,8 +455,7 @@ EXEC (@vSQL); </CommandText>
                               <TextRun>
                                 <Value>Columna</Value>
                                 <Style>
-                                  <FontFamily>Arial</FontFamily>
-                                  <FontSize>12pt</FontSize>
+                                  <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
                                 </Style>
                               </TextRun>
@@ -480,6 +479,7 @@ EXEC (@vSQL); </CommandText>
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
+                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
@@ -496,8 +496,7 @@ EXEC (@vSQL); </CommandText>
                                   <TextRun>
                                     <Value>Tipo Dato</Value>
                                     <Style>
-                                      <FontFamily>Arial</FontFamily>
-                                      <FontSize>12pt</FontSize>
+                                      <FontSize>11pt</FontSize>
                                       <FontWeight>Bold</FontWeight>
                                     </Style>
                                   </TextRun>
@@ -537,8 +536,7 @@ EXEC (@vSQL); </CommandText>
                                       <TextRun>
                                         <Value>Tamaño</Value>
                                         <Style>
-                                          <FontFamily>Arial</FontFamily>
-                                          <FontSize>12pt</FontSize>
+                                          <FontSize>11pt</FontSize>
                                           <FontWeight>Bold</FontWeight>
                                         </Style>
                                       </TextRun>
@@ -578,8 +576,7 @@ EXEC (@vSQL); </CommandText>
                                           <TextRun>
                                             <Value>Precisión</Value>
                                             <Style>
-                                              <FontFamily>Arial</FontFamily>
-                                              <FontSize>12pt</FontSize>
+                                              <FontSize>11pt</FontSize>
                                               <FontWeight>Bold</FontWeight>
                                             </Style>
                                           </TextRun>
@@ -619,8 +616,7 @@ EXEC (@vSQL); </CommandText>
                                               <TextRun>
                                                 <Value>Nulos</Value>
                                                 <Style>
-                                                  <FontFamily>Arial</FontFamily>
-                                                  <FontSize>12pt</FontSize>
+                                                  <FontSize>11pt</FontSize>
                                                   <FontWeight>Bold</FontWeight>
                                                 </Style>
                                               </TextRun>
@@ -895,7 +891,7 @@ EXEC (@vSQL); </CommandText>
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>0.64463in</Height>
+        <Height>0.63421in</Height>
         <Style />
       </Body>
       <Width>11.21774in</Width>
@@ -946,21 +942,21 @@ EXEC (@vSQL); </CommandText>
       </ValidValues>
     </ReportParameter>
     <ReportParameter Name="pMostrarVistas">
-      <DataType>String</DataType>
+      <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>1</Value>
+          <Value>true</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostrar Vistas?</Prompt>
       <ValidValues>
         <ParameterValues>
           <ParameterValue>
-            <Value>1</Value>
+            <Value>true</Value>
             <Label>Sí</Label>
           </ParameterValue>
           <ParameterValue>
-            <Value>0</Value>
+            <Value>false</Value>
             <Label>No</Label>
           </ParameterValue>
         </ParameterValues>
@@ -968,12 +964,6 @@ EXEC (@vSQL); </CommandText>
     </ReportParameter>
     <ReportParameter Name="pVistas">
       <DataType>Integer</DataType>
-      <DefaultValue>
-        <DataSetReference>
-          <DataSetName>dsListaVistas</DataSetName>
-          <ValueField>IDVista</ValueField>
-        </DataSetReference>
-      </DefaultValue>
       <Prompt>Vistas:</Prompt>
       <ValidValues>
         <DataSetReference>

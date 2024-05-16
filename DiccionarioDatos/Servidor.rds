@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="BaseDatos">
+<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="Servidor">
   <ConnectionProperties>
     <Extension>SQL</Extension>
-    <ConnectString>Data Source=HITOPC\SQLDEVELOP</ConnectString>
+    <ConnectString>Data Source=HERGUZCR</ConnectString>
     <IntegratedSecurity>true</IntegratedSecurity>
   </ConnectionProperties>
   <DataSourceID>8ac026e7-8aeb-4bfb-8e32-38361114cd06</DataSourceID>
