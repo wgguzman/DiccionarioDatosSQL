@@ -7,9 +7,9 @@
     </am:CreatedBy>
     <am:UpdatedBy>
       <am:Name>SSDTRS</am:Name>
-      <am:Version>17.9.34728.123</am:Version>
+      <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-14T15:14:03.3562240Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-16T15:37:38.9111856Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -1005,7 +1005,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.3in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -1168,7 +1168,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>8.92953in</Size>
+                        <Size>8.89828in</Size>
                         <CellContents>
                           <Textbox Name="Textbox2">
                             <CanGrow>true</CanGrow>
@@ -1225,7 +1225,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>10.46347in</Size>
+                        <Size>10.43222in</Size>
                         <CellContents>
                           <Textbox Name="Textbox99">
                             <CanGrow>true</CanGrow>
@@ -1316,7 +1316,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>8.92953in</Size>
+                            <Size>8.89828in</Size>
                             <CellContents>
                               <Textbox Name="Textbox5">
                                 <CanGrow>true</CanGrow>
@@ -1380,7 +1380,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRuns>
                                   <TextRun>
                                     <Value>=Fields!Etiqueta.Value</Value>
-                                    <Style />
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                    </Style>
                                   </TextRun>
                                 </TextRuns>
                                 <Style />
@@ -1392,6 +1394,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -1403,7 +1406,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>8.92953in</Size>
+                            <Size>8.89828in</Size>
                             <CellContents>
                               <Textbox Name="Descripcion7">
                                 <CanGrow>true</CanGrow>
@@ -1413,7 +1416,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <TextRuns>
                                       <TextRun>
                                         <Value>=Fields!Descripcion.Value</Value>
-                                        <Style />
+                                        <Style>
+                                          <FontSize>11pt</FontSize>
+                                        </Style>
                                       </TextRun>
                                     </TextRuns>
                                     <Style />
@@ -1425,6 +1430,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
                                   <PaddingTop>2pt</PaddingTop>
@@ -1438,7 +1444,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>10.46347in</Size>
+                        <Size>10.43222in</Size>
                         <CellContents>
                           <Subreport Name="DetalleTablas">
                             <ReportName>DetalleTablas</ReportName>
@@ -1504,7 +1510,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>8.92953in</Size>
+                        <Size>8.89828in</Size>
                         <CellContents>
                           <Textbox Name="Textbox21">
                             <CanGrow>true</CanGrow>
@@ -1542,8 +1548,8 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <DataSetName>dsTablas</DataSetName>
             <Top>3.49931in</Top>
             <Left>0.00005cm</Left>
-            <Height>2.24792in</Height>
-            <Width>10.49472in</Width>
+            <Height>2.29792in</Height>
+            <Width>10.46347in</Width>
             <Visibility>
               <Hidden>=(Parameters!pMostrarTablas.Value = False) Or (CountRows() = 0)</Hidden>
             </Visibility>
@@ -1557,7 +1563,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>8.96076in</Width>
+                  <Width>8.92953in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1685,7 +1691,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.3in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -1698,7 +1704,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRun>
                                   <Value>=Fields!Descripcion.Value</Value>
                                   <Style>
-                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>11pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1711,6 +1717,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1927,7 +1934,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRuns>
                                   <TextRun>
                                     <Value>=Fields!Etiqueta.Value</Value>
-                                    <Style />
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                    </Style>
                                   </TextRun>
                                 </TextRuns>
                                 <Style />
@@ -1939,6 +1948,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -1992,8 +2002,8 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <DataSetName>dsEsquemas</DataSetName>
             <Top>1.73819in</Top>
             <Left>0.00005cm</Left>
-            <Height>1.55in</Height>
-            <Width>10.4947in</Width>
+            <Height>1.6in</Height>
+            <Width>10.46347in</Width>
             <ZIndex>1</ZIndex>
             <Visibility>
               <Hidden>=(Parameters!pMostrarEsquemas.Value = False) Or (CountRows() = 0)</Hidden>
@@ -2008,7 +2018,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>8.96076in</Width>
+                  <Width>8.94514in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -2045,6 +2055,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -2136,7 +2147,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.3in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -2149,7 +2160,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRun>
                                   <Value>=Fields!Descripcion.Value</Value>
                                   <Style>
-                                    <FontFamily>Arial</FontFamily>
+                                    <FontSize>11pt</FontSize>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -2162,6 +2173,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -2220,7 +2232,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>1.53394in</Size>
+                    <Size>1.51832in</Size>
                     <CellContents>
                       <Textbox Name="Textbox130">
                         <CanGrow>true</CanGrow>
@@ -2270,7 +2282,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>1.53394in</Size>
+                        <Size>1.51832in</Size>
                         <CellContents>
                           <Textbox Name="Textbox29">
                             <CanGrow>true</CanGrow>
@@ -2314,7 +2326,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>1.53394in</Size>
+                        <Size>1.51832in</Size>
                         <CellContents>
                           <Textbox Name="Textbox41">
                             <CanGrow>true</CanGrow>
@@ -2368,7 +2380,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                         </SortExpression>
                       </SortExpressions>
                       <TablixHeader>
-                        <Size>1.53394in</Size>
+                        <Size>1.51832in</Size>
                         <CellContents>
                           <Textbox Name="Etiqueta3">
                             <CanGrow>true</CanGrow>
@@ -2378,7 +2390,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRuns>
                                   <TextRun>
                                     <Value>=Fields!Etiqueta.Value</Value>
-                                    <Style />
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                    </Style>
                                   </TextRun>
                                 </TextRuns>
                                 <Style />
@@ -2390,6 +2404,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -2404,7 +2419,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>1.53394in</Size>
+                        <Size>1.51832in</Size>
                         <CellContents>
                           <Textbox Name="Textbox7">
                             <CanGrow>true</CanGrow>
@@ -2442,8 +2457,8 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsBaseDatos</DataSetName>
             <Left>0.00005cm</Left>
-            <Height>1.55in</Height>
-            <Width>10.4947in</Width>
+            <Height>1.6in</Height>
+            <Width>10.46346in</Width>
             <ZIndex>2</ZIndex>
             <Visibility>
               <Hidden>=(Parameters!pMostrarBaseDatos.Value = False) Or (CountRows() = 0)</Hidden>
@@ -2576,7 +2591,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.3in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -2748,7 +2763,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value />
+                                    <Value>1</Value>
                                     <Style>
                                       <FontStyle>Normal</FontStyle>
                                       <FontSize>14pt</FontSize>
@@ -2951,7 +2966,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRuns>
                                   <TextRun>
                                     <Value>=Fields!Etiqueta.Value</Value>
-                                    <Style />
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                    </Style>
                                   </TextRun>
                                 </TextRuns>
                                 <Style />
@@ -2963,6 +2980,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -2984,7 +3002,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <TextRuns>
                                       <TextRun>
                                         <Value>=Fields!Descripcion.Value</Value>
-                                        <Style />
+                                        <Style>
+                                          <FontSize>11pt</FontSize>
+                                        </Style>
                                       </TextRun>
                                     </TextRuns>
                                     <Style />
@@ -2996,6 +3016,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
                                   <PaddingTop>2pt</PaddingTop>
@@ -3113,7 +3134,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <DataSetName>dsVistas</DataSetName>
             <Top>5.94861in</Top>
             <Left>0.00005cm</Left>
-            <Height>2.24792in</Height>
+            <Height>2.29792in</Height>
             <Width>10.49472in</Width>
             <ZIndex>3</ZIndex>
             <Visibility>
@@ -3247,7 +3268,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.3in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -3622,7 +3643,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRuns>
                                   <TextRun>
                                     <Value>=Fields!Etiqueta.Value</Value>
-                                    <Style />
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                    </Style>
                                   </TextRun>
                                 </TextRuns>
                                 <Style />
@@ -3634,6 +3657,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -3655,7 +3679,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <TextRuns>
                                       <TextRun>
                                         <Value>=Fields!Descripcion.Value</Value>
-                                        <Style />
+                                        <Style>
+                                          <FontSize>11pt</FontSize>
+                                        </Style>
                                       </TextRun>
                                     </TextRuns>
                                     <Style />
@@ -3667,6 +3693,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
                                   <PaddingTop>2pt</PaddingTop>
@@ -3778,7 +3805,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <DataSetName>dsProcedimientos</DataSetName>
             <Top>8.37187in</Top>
             <Left>0.00005cm</Left>
-            <Height>2.24792in</Height>
+            <Height>2.29792in</Height>
             <Width>10.49472in</Width>
             <ZIndex>4</ZIndex>
             <Visibility>
@@ -3950,7 +3977,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>0.3in</Height>
+                  <Height>0.35in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
@@ -4407,7 +4434,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <TextRuns>
                                   <TextRun>
                                     <Value>=Fields!Etiqueta.Value</Value>
-                                    <Style />
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                    </Style>
                                   </TextRun>
                                 </TextRuns>
                                 <Style />
@@ -4419,6 +4448,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Color>LightGrey</Color>
                                 <Style>Solid</Style>
                               </Border>
+                              <VerticalAlign>Middle</VerticalAlign>
                               <PaddingLeft>2pt</PaddingLeft>
                               <PaddingRight>2pt</PaddingRight>
                               <PaddingTop>2pt</PaddingTop>
@@ -4440,7 +4470,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <TextRuns>
                                       <TextRun>
                                         <Value>=Fields!Descripcion.Value</Value>
-                                        <Style />
+                                        <Style>
+                                          <FontSize>11pt</FontSize>
+                                        </Style>
                                       </TextRun>
                                     </TextRuns>
                                     <Style />
@@ -4452,6 +4484,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
                                   <PaddingTop>2pt</PaddingTop>
@@ -4563,7 +4596,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <DataSetName>dsFunciones</DataSetName>
             <Top>10.83771in</Top>
             <Left>0.00005cm</Left>
-            <Height>2.49792in</Height>
+            <Height>2.54792in</Height>
             <Width>10.49472in</Width>
             <ZIndex>5</ZIndex>
             <Visibility>
@@ -4579,7 +4612,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
         <Height>13.78334in</Height>
         <Style />
       </Body>
-      <Width>10.54682in</Width>
+      <Width>13.93224in</Width>
       <Page>
         <PageHeader>
           <Height>2.07055cm</Height>
@@ -4672,7 +4705,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </Textbox>
             <Image Name="Image2">
               <Source>Embedded</Source>
-              <Value>herguz_logo</Value>
+              <Value>Logo_EARTH</Value>
               <Sizing>FitProportional</Sizing>
               <Left>0.00005cm</Left>
               <Height>0.7874in</Height>
@@ -4904,10 +4937,10 @@ DROP TABLE #DiccionarioTemp;</CommandText>
   </ReportSections>
   <ReportParameters>
     <ReportParameter Name="pMostrarBaseDatos">
-      <DataType>String</DataType>
+      <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>true</Value>
+          <Value>false</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostrar Base Datos?</Prompt>
@@ -4927,10 +4960,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
     <ReportParameter Name="pBaseDatos">
       <DataType>String</DataType>
       <DefaultValue>
-        <DataSetReference>
-          <DataSetName>dsListaBasesDatos</DataSetName>
-          <ValueField>BaseDatos</ValueField>
-        </DataSetReference>
+        <Values>
+          <Value>SGA_Soporte</Value>
+        </Values>
       </DefaultValue>
       <Prompt>Base de Datos:</Prompt>
       <ValidValues>
@@ -4942,10 +4974,10 @@ DROP TABLE #DiccionarioTemp;</CommandText>
       </ValidValues>
     </ReportParameter>
     <ReportParameter Name="pMostrarEsquemas">
-      <DataType>String</DataType>
+      <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>true</Value>
+          <Value>false</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostrar Esquemas?</Prompt>
@@ -4981,21 +5013,21 @@ DROP TABLE #DiccionarioTemp;</CommandText>
       <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="pMostrarTablas">
-      <DataType>String</DataType>
+      <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>1</Value>
+          <Value>true</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostar Tablas?</Prompt>
       <ValidValues>
         <ParameterValues>
           <ParameterValue>
-            <Value>1</Value>
+            <Value>true</Value>
             <Label>Sí</Label>
           </ParameterValue>
           <ParameterValue>
-            <Value>0</Value>
+            <Value>false</Value>
             <Label>No</Label>
           </ParameterValue>
         </ParameterValues>
@@ -5003,12 +5035,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
     </ReportParameter>
     <ReportParameter Name="pTablas">
       <DataType>Integer</DataType>
-      <DefaultValue>
-        <DataSetReference>
-          <DataSetName>dsListaTablas</DataSetName>
-          <ValueField>IDTabla</ValueField>
-        </DataSetReference>
-      </DefaultValue>
       <Prompt>Tablas:</Prompt>
       <ValidValues>
         <DataSetReference>
@@ -5020,21 +5046,21 @@ DROP TABLE #DiccionarioTemp;</CommandText>
       <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="pMostrarVistas">
-      <DataType>String</DataType>
+      <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>1</Value>
+          <Value>false</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostrar Vistas?</Prompt>
       <ValidValues>
         <ParameterValues>
           <ParameterValue>
-            <Value>1</Value>
+            <Value>true</Value>
             <Label>Sí</Label>
           </ParameterValue>
           <ParameterValue>
-            <Value>0</Value>
+            <Value>false</Value>
             <Label>No</Label>
           </ParameterValue>
         </ParameterValues>
@@ -5098,22 +5124,22 @@ DROP TABLE #DiccionarioTemp;</CommandText>
       <MultiValue>true</MultiValue>
     </ReportParameter>
     <ReportParameter Name="pMostrarFunciones">
-      <DataType>String</DataType>
+      <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>0</Value>
+          <Value>false</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostrar Funciones?</Prompt>
       <ValidValues>
         <ParameterValues>
           <ParameterValue>
-            <Value>1</Value>
-            <Label>Sí</Label>
+            <Value>true</Value>
+            <Label>true</Label>
           </ParameterValue>
           <ParameterValue>
-            <Value>0</Value>
-            <Label>No</Label>
+            <Value>false</Value>
+            <Label>false</Label>
           </ParameterValue>
         </ParameterValues>
       </ValidValues>

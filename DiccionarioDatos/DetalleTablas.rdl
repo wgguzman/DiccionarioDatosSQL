@@ -7,9 +7,9 @@
     </am:CreatedBy>
     <am:UpdatedBy>
       <am:Name>SSDTRS</am:Name>
-      <am:Version>17.9.34728.123</am:Version>
+      <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-15T20:47:56.6219433Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-16T16:55:57.1930284Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -1299,7 +1299,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     <GroupExpressions>
                       <GroupExpression>=Fields!IDEsquema.Value</GroupExpression>
                       <GroupExpression>=Fields!IDTabla.Value</GroupExpression>
-                      <GroupExpression>=Fields!TipoLlave.Value</GroupExpression>
+                      <GroupExpression>=Fields!NombreLlave.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
@@ -1308,9 +1308,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </SortExpression>
                     <SortExpression>
                       <Value>=Fields!IDTabla.Value</Value>
-                    </SortExpression>
-                    <SortExpression>
-                      <Value>=Fields!TipoLlave.Value</Value>
                     </SortExpression>
                     <SortExpression>
                       <Value>=Fields!NombreLlave.Value</Value>
@@ -3086,7 +3083,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     <GroupExpressions>
                       <GroupExpression>=Fields!IDEsquema.Value</GroupExpression>
                       <GroupExpression>=Fields!IDTabla.Value</GroupExpression>
-                      <GroupExpression>=Fields!TipoLlave.Value</GroupExpression>
+                      <GroupExpression>=Fields!NombreLlave.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
@@ -3095,9 +3092,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </SortExpression>
                     <SortExpression>
                       <Value>=Fields!IDTabla.Value</Value>
-                    </SortExpression>
-                    <SortExpression>
-                      <Value>=Fields!TipoLlave.Value</Value>
                     </SortExpression>
                     <SortExpression>
                       <Value>=Fields!NombreLlave.Value</Value>
@@ -4439,7 +4433,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     <GroupExpressions>
                       <GroupExpression>=Fields!IDEsquema.Value</GroupExpression>
                       <GroupExpression>=Fields!IDTabla.Value</GroupExpression>
-                      <GroupExpression>=Fields!TipoLlave.Value</GroupExpression>
+                      <GroupExpression>=Fields!NombreLlave.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
@@ -4448,9 +4442,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </SortExpression>
                     <SortExpression>
                       <Value>=Fields!IDTabla.Value</Value>
-                    </SortExpression>
-                    <SortExpression>
-                      <Value>=Fields!TipoLlave.Value</Value>
                     </SortExpression>
                     <SortExpression>
                       <Value>=Fields!NombreLlave.Value</Value>

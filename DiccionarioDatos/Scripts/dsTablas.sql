@@ -1,8 +1,8 @@
 ﻿
-DECLARE @pBaseDatos VARCHAR(MAX) = 'EjemploDB';
+DECLARE @pBaseDatos VARCHAR(MAX) = 'SGA_Soporte';
 DECLARE @pEtiquetas VARCHAR(MAX) = 'MS_Description';
 DECLARE @pEsquemas	INT = 1;
-DECLARE @pTablas	INT = 1109578991;
+DECLARE @pTablas	INT = 2060586429;
 
 -- Documentación de las tablas de una base de datos. 
 
