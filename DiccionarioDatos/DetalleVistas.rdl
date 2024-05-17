@@ -7,9 +7,9 @@
     </am:CreatedBy>
     <am:UpdatedBy>
       <am:Name>SSDTRS</am:Name>
-      <am:Version>17.9.34728.123</am:Version>
+      <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-15T20:12:52.5168160Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-17T16:10:02.1169948Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -479,7 +479,6 @@ EXEC (@vSQL); </CommandText>
                           <PaddingBottom>2pt</PaddingBottom>
                         </Style>
                       </Textbox>
-                      <rd:Selected>true</rd:Selected>
                     </CellContents>
                   </TablixHeader>
                   <TablixMembers>
@@ -757,7 +756,8 @@ EXEC (@vSQL); </CommandText>
                                       <Paragraph>
                                         <TextRuns>
                                           <TextRun>
-                                            <Value>=Fields!Tamanio.Value</Value>
+                                            <Label>Tamanio</Label>
+                                            <Value>=IIF(Fields!Tamanio.Value &gt;=0, Fields!Tamanio.Value, "Max")</Value>
                                             <Style />
                                           </TextRun>
                                         </TextRuns>

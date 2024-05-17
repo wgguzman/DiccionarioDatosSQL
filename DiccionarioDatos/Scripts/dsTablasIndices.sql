@@ -1,7 +1,7 @@
-﻿DECLARE @pBaseDatos				VARCHAR(MAX) = 'EjemploDB';
+﻿DECLARE @pBaseDatos				VARCHAR(MAX) = 'sga_soporte';
 DECLARE @pEtiquetas				VARCHAR(MAX) = 'MS_Description';
 DECLARE @pEsquemas				INT = 1;
-DECLARE @pTablas				INT = 1589580701 --, 1701581100, 1573580644;;
+DECLARE @pTablas				INT = 1030450895 --, 1701581100, 1573580644;;
 
 -- Documentación de los indices de las tablas de una base de datos. 
 
@@ -60,11 +60,12 @@ SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema
 			    AND IC.OBJECT_ID	 = I.OBJECT_ID
 				AND IC.COLUMN_ID	 = C.COLUMN_ID
 				AND I.IS_PRIMARY_KEY = 0
+			  INNER JOIN ' + @pBaseDatos + '.SYS.OBJECTS O
+ 			     ON O.NAME = I.NAME
 		       LEFT JOIN ' + @pBaseDatos + '.SYS.EXTENDED_PROPERTIES D
-		      	 ON D.MAJOR_ID   = Ic.OBJECT_ID
-		        AND D.MINOR_ID   = IC.INDEX_ID
+		      	 ON D.MAJOR_ID   = O.OBJECT_ID
 				AND D.NAME		 NOT LIKE ''MS_Diagram%''
-		        AND D.CLASS_DESC = ''INDEX'';'
+		        AND D.CLASS_DESC = ''OBJECT_OR_COLUMN'';'
 
 EXEC (@vSQL); 
 
