@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-16T15:37:38.9111856Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-17T04:39:17.2055879Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -1139,7 +1139,8 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>Tablas</Value>
+                                <Label>Tablas</Label>
+                                <Value>=iif(Parameters!pTablas.Count = 1, "Tabla", "Tablas")</Value>
                                 <Style>
                                   <FontStyle>Normal</FontStyle>
                                   <FontSize>14pt</FontSize>
@@ -1785,7 +1786,8 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>Esquemas</Value>
+                                <Label>Esquemas</Label>
+                                <Value>=iif(Parameters!pEsquemas.Count = 1, "Esquema", "Esquemas")</Value>
                                 <Style>
                                   <FontSize>14pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
@@ -2055,7 +2057,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -2756,14 +2757,14 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                       <TablixHeader>
                         <Size>8.92953in</Size>
                         <CellContents>
-                          <Textbox Name="Textbox3">
+                          <Textbox Name="Textbox25">
                             <CanGrow>true</CanGrow>
                             <KeepTogether>true</KeepTogether>
                             <Paragraphs>
                               <Paragraph>
                                 <TextRuns>
                                   <TextRun>
-                                    <Value>1</Value>
+                                    <Value />
                                     <Style>
                                       <FontStyle>Normal</FontStyle>
                                       <FontSize>14pt</FontSize>
@@ -2775,7 +2776,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                 <Style />
                               </Paragraph>
                             </Paragraphs>
-                            <rd:DefaultName>Textbox2</rd:DefaultName>
+                            <rd:DefaultName>Textbox25</rd:DefaultName>
                             <Style>
                               <Border>
                                 <Color>LightGrey</Color>

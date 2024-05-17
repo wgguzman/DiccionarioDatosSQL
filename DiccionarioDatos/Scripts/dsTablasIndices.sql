@@ -68,7 +68,18 @@ SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema
 
 EXEC (@vSQL); 
 
-SELECT * 
+SELECT IDEsquema 
+	 , IDTabla 
+	 , Tabla 
+	 , IDColumna 
+	 , Columna 
+	 , IDIndice 
+	 , Indice 
+	 , TipoIndice 
+	 , Inactivo 
+	 , Unico 
+	 , Etiqueta 
+	 , DescripcionIndice 
   FROM #DiccionarioTemp 
  WHERE IDEsquema IN (@pEsquemas)
    AND IDTabla   IN (@pTablas)

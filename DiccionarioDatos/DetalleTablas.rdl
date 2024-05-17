@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-16T16:55:57.1930284Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-17T04:26:06.9645785Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -654,11 +654,23 @@ SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema
 		       LEFT JOIN ' + @pBaseDatos + '.SYS.EXTENDED_PROPERTIES D
 		      	 ON D.MAJOR_ID   = Ic.OBJECT_ID
 		        AND D.MINOR_ID   = IC.INDEX_ID
+				AND D.NAME		 NOT LIKE ''MS_Diagram%''
 		        AND D.CLASS_DESC = ''INDEX'';'
 
 EXEC (@vSQL); 
 
-SELECT * 
+SELECT IDEsquema 
+	 , IDTabla 
+	 , Tabla 
+	 , IDColumna 
+	 , Columna 
+	 , IDIndice 
+	 , Indice 
+	 , TipoIndice 
+	 , Inactivo 
+	 , Unico 
+	 , Etiqueta 
+	 , DescripcionIndice 
   FROM #DiccionarioTemp 
  WHERE IDEsquema IN (@pEsquemas)
    AND IDTabla   IN (@pTablas)
@@ -718,6 +730,119 @@ DROP TABLE #DiccionarioTemp;</CommandText>
         </Field>
       </Fields>
     </DataSet>
+    <DataSet Name="dsTablasTriggers">
+      <Query>
+        <DataSourceName>Servidor</DataSourceName>
+        <QueryParameters>
+          <QueryParameter Name="@pBaseDatos">
+            <Value>=Parameters!pBaseDatos.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@pEsquemas">
+            <Value>=Parameters!pEsquemas.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@pTablas">
+            <Value>=Parameters!pTablas.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
+        <CommandText>-- Documentación de los triggers de las tablas de una base de datos. 
+
+DECLARE @vSQL VARCHAR(MAX) = '';
+
+DROP TABLE IF EXISTS #DiccionarioTemp;
+
+CREATE TABLE #DiccionarioTemp(
+	   IDEsquema  INT 
+	 , IDTabla	  INT 
+	 , Tabla	  VARCHAR(MAX) 
+	 , IDTigger	  INT 
+	 , [Trigger]  VARCHAR(MAX) 
+	 , Tipo		  VARCHAR(MAX) 
+	 , Eventos	  VARCHAR(MAX) 
+	 , Estado	  BIT 
+	);
+SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema 
+										   , IDTabla 
+										   , Tabla 
+										   , IDTigger
+										   , [Trigger] 
+										   , Tipo
+										   , Eventos
+										   , Estado) 
+			 SELECT IDEsquema = CONVERT(INT, E.SCHEMA_ID) 
+				  , IDTabla	  = CONVERT(INT, T.OBJECT_ID) 
+				  , Tabla	  = CONVERT(VARCHAR(MAX), T.NAME) 
+				  , IDTigger  = CONVERT(INT, O.OBJECT_ID) 
+				  , [Trigger] = CONVERT(VARCHAR(MAX), O.NAME ) 
+				  , Tipo	  = CASE O.is_instead_of_trigger WHEN 1 THEN ''Instead Of'' ELSE ''After'' END
+				  , Eventos	  = R.TIPO
+				  , Estado	  = CASE O.IS_DISABLED WHEN 0 THEN 1 ELSE 0 END
+ 			   FROM ' + @pBaseDatos + '.SYS.SCHEMAS E
+			  INNER JOIN ' + @pBaseDatos + '.SYS.TABLES T  
+				 ON E.SCHEMA_ID = T.SCHEMA_ID
+			    AND T.NAME != ''sysdiagrams''
+			 INNER JOIN ' + @pBaseDatos + '.SYS.TRIGGERS O
+			    ON O.PARENT_ID = T.OBJECT_ID
+			 INNER JOIN ( SELECT IDTRIGGER = E.OBJECT_ID
+							   , TIPO =STUFF (( SELECT DISTINCT '', '' + D.TYPE_DESC  
+													FROM ' + @pBaseDatos + '.SYS.TRIGGER_EVENTS D
+													 FOR XML PATH('''')
+											  ), 1, 1, '''')
+							FROM ' + @pBaseDatos + '.SYS.TRIGGER_EVENTS E
+						   GROUP BY E.OBJECT_ID ) R
+			    ON R.IDTRIGGER = O.OBJECT_ID;'
+
+EXEC (@vSQL); 
+
+SELECT IDEsquema
+	 , IDTabla 
+	 , Tabla 
+	 , IDTigger 
+	 , [Trigger] 
+	 , Tipo 
+	 , Eventos 
+     , Estado 
+  FROM #DiccionarioTemp 
+ WHERE IDEsquema IN (@pEsquemas)
+   AND IDTabla   IN (@pTablas)
+ ORDER BY [Trigger];
+
+DROP TABLE #DiccionarioTemp;</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="IDEsquema">
+          <DataField>IDEsquema</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="IDTabla">
+          <DataField>IDTabla</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Tabla">
+          <DataField>Tabla</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IDTigger">
+          <DataField>IDTigger</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Trigger">
+          <DataField>Trigger</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Tipo">
+          <DataField>Tipo</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Eventos">
+          <DataField>Eventos</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Estado">
+          <DataField>Estado</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
   </DataSets>
   <ReportSections>
     <ReportSection>
@@ -734,6 +859,83 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
+                <TablixRow>
+                  <Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox141">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontSize>14pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>Underline</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox138</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#d2ded7</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox142">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontSize>14pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>Underline</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox138</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#d2ded7</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
                 <TablixRow>
                   <Height>0.3in</Height>
                   <TablixCells>
@@ -863,7 +1065,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixHeader>
                     <Size>2.32643in</Size>
                     <CellContents>
-                      <Textbox Name="Textbox57">
+                      <Textbox Name="Textbox148">
                         <CanGrow>true</CanGrow>
                         <KeepTogether>true</KeepTogether>
                         <Paragraphs>
@@ -871,6 +1073,45 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <TextRuns>
                               <TextRun>
                                 <Value>Columnas</Value>
+                                <Style>
+                                  <FontStyle>Normal</FontStyle>
+                                  <FontSize>14pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <TextDecoration>Underline</TextDecoration>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox148</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>#d2ded7</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                </TablixMember>
+                <TablixMember>
+                  <TablixHeader>
+                    <Size>2.32643in</Size>
+                    <CellContents>
+                      <Textbox Name="Textbox57">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>Descripción</Value>
                                 <Style>
                                   <FontSize>11pt</FontSize>
                                   <FontWeight>Bold</FontWeight>
@@ -997,7 +1238,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsTablasCampos</DataSetName>
             <Left>0.01756cm</Left>
-            <Height>0.65in</Height>
+            <Height>1in</Height>
             <Width>11.40962in</Width>
             <Style>
               <Border>
@@ -1009,7 +1250,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.04167in</Width>
+                  <Width>0.03125in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1868,10 +2109,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                 </FilterValues>
               </Filter>
             </Filters>
-            <Top>1.71337in</Top>
-            <Left>0.01754cm</Left>
+            <Top>1.89045in</Top>
             <Height>2.2in</Height>
-            <Width>11.40272in</Width>
+            <Width>11.3923in</Width>
             <ZIndex>1</ZIndex>
             <Visibility>
               <Hidden>=iif(CountRows()=0,true, false)</Hidden>
@@ -1886,7 +2126,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.04167in</Width>
+                  <Width>0.03125in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -2130,7 +2370,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>11.36796in</Size>
+                    <Size>11.34339in</Size>
                     <CellContents>
                       <Textbox Name="Textbox128">
                         <CanGrow>true</CanGrow>
@@ -2139,7 +2379,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                           <Paragraph>
                             <TextRuns>
                               <TextRun>
-                                <Value>Indices</Value>
+                                <Value>Índices</Value>
                                 <Style>
                                   <FontStyle>Normal</FontStyle>
                                   <FontSize>14pt</FontSize>
@@ -2196,7 +2436,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>11.36796in</Size>
+                        <Size>11.34339in</Size>
                         <CellContents>
                           <Textbox Name="NombreLlave2">
                             <CanGrow>true</CanGrow>
@@ -2250,7 +2490,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>11.36796in</Size>
+                        <Size>11.34339in</Size>
                         <CellContents>
                           <Textbox Name="Textbox43">
                             <CanGrow>true</CanGrow>
@@ -2340,7 +2580,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>9.0327in</Size>
+                            <Size>9.00813in</Size>
                             <CellContents>
                               <Textbox Name="DescripcionLlave2">
                                 <CanGrow>true</CanGrow>
@@ -2381,13 +2621,13 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>11.36796in</Size>
+                        <Size>11.34339in</Size>
                         <CellContents>
                           <Tablix Name="tablaColumnasReferencias2">
                             <TablixBody>
                               <TablixColumns>
                                 <TablixColumn>
-                                  <Width>0.05581in</Width>
+                                  <Width>0.03125in</Width>
                                 </TablixColumn>
                               </TablixColumns>
                               <TablixRows>
@@ -2697,7 +2937,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <TablixMembers>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.39167in</Size>
+                                    <Size>1.3671in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox158">
                                         <CanGrow>true</CanGrow>
@@ -2741,7 +2981,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <DataSetName>dsTablasIndices</DataSetName>
             <Top>9.51398in</Top>
             <Height>2.2in</Height>
-            <Width>11.40963in</Width>
+            <Width>11.37464in</Width>
             <ZIndex>2</ZIndex>
             <Visibility>
               <Hidden>=iif(CountRows()=0,true, false)</Hidden>
@@ -2756,7 +2996,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.04167in</Width>
+                  <Width>0.03125in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -3403,7 +3643,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                           <Paragraph>
                                             <TextRuns>
                                               <TextRun>
-                                                <Value>Tabla deReferencia</Value>
+                                                <Value>Tabla de Referencia</Value>
                                                 <Style>
                                                   <FontSize>11pt</FontSize>
                                                   <FontWeight>Bold</FontWeight>
@@ -3445,7 +3685,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                                 <TextRuns>
                                                   <TextRun>
                                                     <Label>BorradoFK</Label>
-                                                    <Value>Tipo de Borrado en FK</Value>
+                                                    <Value>Tipo de Borrado FK</Value>
                                                     <Style>
                                                       <FontSize>11pt</FontSize>
                                                       <FontWeight>Bold</FontWeight>
@@ -3486,7 +3726,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                                     <TextRuns>
                                                       <TextRun>
                                                         <Label>ActualizadoFK</Label>
-                                                        <Value>Tipo de Actualizado en FK</Value>
+                                                        <Value>Tipo de Actualización FK</Value>
                                                         <Style>
                                                           <FontSize>11pt</FontSize>
                                                           <FontWeight>Bold</FontWeight>
@@ -4114,7 +4354,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <Top>4.24315in</Top>
             <Left>0.02646cm</Left>
             <Height>2.8in</Height>
-            <Width>11.39175in</Width>
+            <Width>11.38133in</Width>
             <ZIndex>3</ZIndex>
             <Visibility>
               <Hidden>=iif(CountRows()=0,true, false)</Hidden>
@@ -4129,7 +4369,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.04518in</Width>
+                  <Width>0.03125in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -4373,7 +4613,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               <TablixMembers>
                 <TablixMember>
                   <TablixHeader>
-                    <Size>11.36796in</Size>
+                    <Size>11.33808in</Size>
                     <CellContents>
                       <Textbox Name="Textbox130">
                         <CanGrow>true</CanGrow>
@@ -4450,7 +4690,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                   <TablixMembers>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>11.36796in</Size>
+                        <Size>11.33808in</Size>
                         <CellContents>
                           <Textbox Name="NombreLlave4">
                             <CanGrow>true</CanGrow>
@@ -4504,7 +4744,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>11.36796in</Size>
+                        <Size>11.33808in</Size>
                         <CellContents>
                           <Textbox Name="Textbox45">
                             <CanGrow>true</CanGrow>
@@ -4594,7 +4834,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                       <TablixMembers>
                         <TablixMember>
                           <TablixHeader>
-                            <Size>9.0327in</Size>
+                            <Size>9.00282in</Size>
                             <CellContents>
                               <Textbox Name="DescripcionLlave4">
                                 <CanGrow>true</CanGrow>
@@ -4635,13 +4875,13 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                     </TablixMember>
                     <TablixMember>
                       <TablixHeader>
-                        <Size>11.36796in</Size>
+                        <Size>11.33808in</Size>
                         <CellContents>
                           <Tablix Name="tablaColumnasReferencias4">
                             <TablixBody>
                               <TablixColumns>
                                 <TablixColumn>
-                                  <Width>0.06113in</Width>
+                                  <Width>0.03125in</Width>
                                 </TablixColumn>
                               </TablixColumns>
                               <TablixRows>
@@ -4953,7 +5193,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <TablixMembers>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>1.29858in</Size>
+                                    <Size>1.2687in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox168">
                                         <CanGrow>true</CanGrow>
@@ -5006,7 +5246,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </Filters>
             <Top>7.19315in</Top>
             <Height>2.2in</Height>
-            <Width>11.41314in</Width>
+            <Width>11.36933in</Width>
             <ZIndex>4</ZIndex>
             <Visibility>
               <Hidden>=iif(CountRows()=0,true, false)</Hidden>
@@ -5021,7 +5261,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>0.04167in</Width>
+                  <Width>0.03125in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -5525,7 +5765,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                                                   <Paragraph>
                                                                     <TextRuns>
                                                                       <TextRun>
-                                                                        <Value>Función mascara</Value>
+                                                                        <Value>Función Mascara</Value>
                                                                         <Style>
                                                                           <FontSize>11pt</FontSize>
                                                                           <FontWeight>Bold</FontWeight>
@@ -5565,7 +5805,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                                                       <Paragraph>
                                                                         <TextRuns>
                                                                           <TextRun>
-                                                                            <Value>Nombre Valore Defecto</Value>
+                                                                            <Value>Nombre Valor Defecto</Value>
                                                                             <Style>
                                                                               <FontSize>11pt</FontSize>
                                                                               <FontWeight>Bold</FontWeight>
@@ -6174,10 +6414,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>dsTablasCampos</DataSetName>
-            <Top>2.09738cm</Top>
-            <Left>0.04765cm</Left>
+            <Top>2.86467cm</Top>
             <Height>0.65in</Height>
-            <Width>14.98813in</Width>
+            <Width>14.97771in</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -6185,11 +6424,637 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               </Border>
             </Style>
           </Tablix>
+          <Tablix Name="TablaTriggers">
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn>
+                  <Width>2.02084in</Width>
+                </TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox140">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontStyle>Normal</FontStyle>
+                                    <FontSize>14pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                    <TextDecoration>Underline</TextDecoration>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style />
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox138</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#d2ded7</BackgroundColor>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.3in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox135">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>Estado</Value>
+                                  <Style>
+                                    <FontSize>11pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox135</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>#e8f1ff</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+                <TablixRow>
+                  <Height>0.35in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Calculado4">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Label>Estado</Label>
+                                  <Value>=IIf(Fields!Estado.Value = True, "Habilitado", "Deshabilitado")</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Left</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Calculado</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <TablixHeader>
+                    <Size>3.06153in</Size>
+                    <CellContents>
+                      <Textbox Name="Textbox132">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value>Triggers</Value>
+                                <Style>
+                                  <FontStyle>Normal</FontStyle>
+                                  <FontSize>14pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                  <TextDecoration>Underline</TextDecoration>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style />
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox127</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>#d2ded7</BackgroundColor>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                  <TablixMembers>
+                    <TablixMember>
+                      <TablixHeader>
+                        <Size>1.9096in</Size>
+                        <CellContents>
+                          <Textbox Name="Textbox138">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value />
+                                    <Style>
+                                      <FontStyle>Normal</FontStyle>
+                                      <FontSize>14pt</FontSize>
+                                      <FontWeight>Bold</FontWeight>
+                                      <TextDecoration>Underline</TextDecoration>
+                                    </Style>
+                                  </TextRun>
+                                </TextRuns>
+                                <Style />
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>Textbox138</rd:DefaultName>
+                            <Style>
+                              <Border>
+                                <Color>LightGrey</Color>
+                                <Style>Solid</Style>
+                              </Border>
+                              <BackgroundColor>#d2ded7</BackgroundColor>
+                              <PaddingLeft>2pt</PaddingLeft>
+                              <PaddingRight>2pt</PaddingRight>
+                              <PaddingTop>2pt</PaddingTop>
+                              <PaddingBottom>2pt</PaddingBottom>
+                            </Style>
+                          </Textbox>
+                        </CellContents>
+                      </TablixHeader>
+                      <TablixMembers>
+                        <TablixMember>
+                          <TablixHeader>
+                            <Size>2.32293in</Size>
+                            <CellContents>
+                              <Textbox Name="Textbox139">
+                                <CanGrow>true</CanGrow>
+                                <KeepTogether>true</KeepTogether>
+                                <Paragraphs>
+                                  <Paragraph>
+                                    <TextRuns>
+                                      <TextRun>
+                                        <Value />
+                                        <Style>
+                                          <FontStyle>Normal</FontStyle>
+                                          <FontSize>14pt</FontSize>
+                                          <FontWeight>Bold</FontWeight>
+                                          <TextDecoration>Underline</TextDecoration>
+                                        </Style>
+                                      </TextRun>
+                                    </TextRuns>
+                                    <Style />
+                                  </Paragraph>
+                                </Paragraphs>
+                                <rd:DefaultName>Textbox138</rd:DefaultName>
+                                <Style>
+                                  <Border>
+                                    <Color>LightGrey</Color>
+                                    <Style>Solid</Style>
+                                  </Border>
+                                  <BackgroundColor>#d2ded7</BackgroundColor>
+                                  <PaddingLeft>2pt</PaddingLeft>
+                                  <PaddingRight>2pt</PaddingRight>
+                                  <PaddingTop>2pt</PaddingTop>
+                                  <PaddingBottom>2pt</PaddingBottom>
+                                </Style>
+                              </Textbox>
+                            </CellContents>
+                          </TablixHeader>
+                          <TablixMembers>
+                            <TablixMember />
+                          </TablixMembers>
+                        </TablixMember>
+                      </TablixMembers>
+                    </TablixMember>
+                  </TablixMembers>
+                </TablixMember>
+                <TablixMember>
+                  <TablixHeader>
+                    <Size>0.51042in</Size>
+                    <CellContents>
+                      <Textbox Name="Textbox51">
+                        <CanGrow>true</CanGrow>
+                        <KeepTogether>true</KeepTogether>
+                        <Paragraphs>
+                          <Paragraph>
+                            <TextRuns>
+                              <TextRun>
+                                <Value />
+                                <Style>
+                                  <FontSize>11pt</FontSize>
+                                  <FontWeight>Bold</FontWeight>
+                                </Style>
+                              </TextRun>
+                            </TextRuns>
+                            <Style>
+                              <TextAlign>Left</TextAlign>
+                            </Style>
+                          </Paragraph>
+                        </Paragraphs>
+                        <rd:DefaultName>Textbox27</rd:DefaultName>
+                        <Style>
+                          <Border>
+                            <Color>LightGrey</Color>
+                            <Style>Solid</Style>
+                          </Border>
+                          <BackgroundColor>#e8f1ff</BackgroundColor>
+                          <VerticalAlign>Middle</VerticalAlign>
+                          <PaddingLeft>2pt</PaddingLeft>
+                          <PaddingRight>2pt</PaddingRight>
+                          <PaddingTop>2pt</PaddingTop>
+                          <PaddingBottom>2pt</PaddingBottom>
+                        </Style>
+                      </Textbox>
+                    </CellContents>
+                  </TablixHeader>
+                  <TablixMembers>
+                    <TablixMember>
+                      <TablixHeader>
+                        <Size>2.55111in</Size>
+                        <CellContents>
+                          <Textbox Name="Textbox3">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value>Trigger</Value>
+                                    <Style>
+                                      <FontSize>11pt</FontSize>
+                                      <FontWeight>Bold</FontWeight>
+                                    </Style>
+                                  </TextRun>
+                                </TextRuns>
+                                <Style>
+                                  <TextAlign>Left</TextAlign>
+                                </Style>
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>Textbox1</rd:DefaultName>
+                            <Style>
+                              <Border>
+                                <Color>LightGrey</Color>
+                                <Style>Solid</Style>
+                              </Border>
+                              <BackgroundColor>#e8f1ff</BackgroundColor>
+                              <VerticalAlign>Middle</VerticalAlign>
+                              <PaddingLeft>2pt</PaddingLeft>
+                              <PaddingRight>2pt</PaddingRight>
+                              <PaddingTop>2pt</PaddingTop>
+                              <PaddingBottom>2pt</PaddingBottom>
+                            </Style>
+                          </Textbox>
+                        </CellContents>
+                      </TablixHeader>
+                      <TablixMembers>
+                        <TablixMember>
+                          <TablixHeader>
+                            <Size>1.9096in</Size>
+                            <CellContents>
+                              <Textbox Name="Textbox7">
+                                <CanGrow>true</CanGrow>
+                                <KeepTogether>true</KeepTogether>
+                                <Paragraphs>
+                                  <Paragraph>
+                                    <TextRuns>
+                                      <TextRun>
+                                        <Value>Tipo</Value>
+                                        <Style>
+                                          <FontSize>11pt</FontSize>
+                                          <FontWeight>Bold</FontWeight>
+                                        </Style>
+                                      </TextRun>
+                                    </TextRuns>
+                                    <Style>
+                                      <TextAlign>Left</TextAlign>
+                                    </Style>
+                                  </Paragraph>
+                                </Paragraphs>
+                                <rd:DefaultName>Textbox5</rd:DefaultName>
+                                <Style>
+                                  <Border>
+                                    <Color>LightGrey</Color>
+                                    <Style>Solid</Style>
+                                  </Border>
+                                  <BackgroundColor>#e8f1ff</BackgroundColor>
+                                  <VerticalAlign>Middle</VerticalAlign>
+                                  <PaddingLeft>2pt</PaddingLeft>
+                                  <PaddingRight>2pt</PaddingRight>
+                                  <PaddingTop>2pt</PaddingTop>
+                                  <PaddingBottom>2pt</PaddingBottom>
+                                </Style>
+                              </Textbox>
+                            </CellContents>
+                          </TablixHeader>
+                          <TablixMembers>
+                            <TablixMember>
+                              <TablixHeader>
+                                <Size>2.32293in</Size>
+                                <CellContents>
+                                  <Textbox Name="Textbox136">
+                                    <CanGrow>true</CanGrow>
+                                    <KeepTogether>true</KeepTogether>
+                                    <Paragraphs>
+                                      <Paragraph>
+                                        <TextRuns>
+                                          <TextRun>
+                                            <Value>Eventos</Value>
+                                            <Style>
+                                              <FontSize>11pt</FontSize>
+                                              <FontWeight>Bold</FontWeight>
+                                            </Style>
+                                          </TextRun>
+                                        </TextRuns>
+                                        <Style>
+                                          <TextAlign>Center</TextAlign>
+                                        </Style>
+                                      </Paragraph>
+                                    </Paragraphs>
+                                    <rd:DefaultName>Textbox136</rd:DefaultName>
+                                    <Style>
+                                      <Border>
+                                        <Color>LightGrey</Color>
+                                        <Style>Solid</Style>
+                                      </Border>
+                                      <BackgroundColor>#e8f1ff</BackgroundColor>
+                                      <VerticalAlign>Middle</VerticalAlign>
+                                      <PaddingLeft>2pt</PaddingLeft>
+                                      <PaddingRight>2pt</PaddingRight>
+                                      <PaddingTop>2pt</PaddingTop>
+                                      <PaddingBottom>2pt</PaddingBottom>
+                                    </Style>
+                                  </Textbox>
+                                </CellContents>
+                              </TablixHeader>
+                              <TablixMembers>
+                                <TablixMember />
+                              </TablixMembers>
+                            </TablixMember>
+                          </TablixMembers>
+                        </TablixMember>
+                      </TablixMembers>
+                    </TablixMember>
+                  </TablixMembers>
+                </TablixMember>
+                <TablixMember>
+                  <Group Name="Triggers">
+                    <GroupExpressions>
+                      <GroupExpression>=Fields!IDEsquema.Value</GroupExpression>
+                      <GroupExpression>=Fields!Trigger.Value</GroupExpression>
+                    </GroupExpressions>
+                  </Group>
+                  <SortExpressions>
+                    <SortExpression>
+                      <Value>=Fields!IDEsquema.Value</Value>
+                    </SortExpression>
+                    <SortExpression>
+                      <Value>=Fields!Trigger.Value</Value>
+                    </SortExpression>
+                  </SortExpressions>
+                  <TablixMembers>
+                    <TablixMember>
+                      <TablixHeader>
+                        <Size>0.51042in</Size>
+                        <CellContents>
+                          <Textbox Name="Textbox133">
+                            <CanGrow>true</CanGrow>
+                            <KeepTogether>true</KeepTogether>
+                            <Paragraphs>
+                              <Paragraph>
+                                <TextRuns>
+                                  <TextRun>
+                                    <Value />
+                                    <Style />
+                                  </TextRun>
+                                </TextRuns>
+                                <Style />
+                              </Paragraph>
+                            </Paragraphs>
+                            <rd:DefaultName>Textbox133</rd:DefaultName>
+                            <Style>
+                              <Border>
+                                <Color>LightGrey</Color>
+                                <Style>Solid</Style>
+                              </Border>
+                              <PaddingLeft>2pt</PaddingLeft>
+                              <PaddingRight>2pt</PaddingRight>
+                              <PaddingTop>2pt</PaddingTop>
+                              <PaddingBottom>2pt</PaddingBottom>
+                            </Style>
+                          </Textbox>
+                        </CellContents>
+                      </TablixHeader>
+                      <TablixMembers>
+                        <TablixMember>
+                          <TablixHeader>
+                            <Size>2.55111in</Size>
+                            <CellContents>
+                              <Textbox Name="Columna7">
+                                <CanGrow>true</CanGrow>
+                                <KeepTogether>true</KeepTogether>
+                                <Paragraphs>
+                                  <Paragraph>
+                                    <TextRuns>
+                                      <TextRun>
+                                        <Value>=Fields!Trigger.Value</Value>
+                                        <Style />
+                                      </TextRun>
+                                    </TextRuns>
+                                    <Style>
+                                      <TextAlign>Left</TextAlign>
+                                    </Style>
+                                  </Paragraph>
+                                </Paragraphs>
+                                <rd:DefaultName>Columna</rd:DefaultName>
+                                <Style>
+                                  <Border>
+                                    <Color>LightGrey</Color>
+                                    <Style>Solid</Style>
+                                  </Border>
+                                  <VerticalAlign>Middle</VerticalAlign>
+                                  <PaddingLeft>2pt</PaddingLeft>
+                                  <PaddingRight>2pt</PaddingRight>
+                                  <PaddingTop>2pt</PaddingTop>
+                                  <PaddingBottom>2pt</PaddingBottom>
+                                </Style>
+                              </Textbox>
+                            </CellContents>
+                          </TablixHeader>
+                          <TablixMembers>
+                            <TablixMember>
+                              <TablixHeader>
+                                <Size>1.9096in</Size>
+                                <CellContents>
+                                  <Textbox Name="TipoDato3">
+                                    <CanGrow>true</CanGrow>
+                                    <KeepTogether>true</KeepTogether>
+                                    <Paragraphs>
+                                      <Paragraph>
+                                        <TextRuns>
+                                          <TextRun>
+                                            <Value>=Fields!Tipo.Value</Value>
+                                            <Style />
+                                          </TextRun>
+                                        </TextRuns>
+                                        <Style>
+                                          <TextAlign>Left</TextAlign>
+                                        </Style>
+                                      </Paragraph>
+                                    </Paragraphs>
+                                    <rd:DefaultName>TipoDato</rd:DefaultName>
+                                    <Style>
+                                      <Border>
+                                        <Color>LightGrey</Color>
+                                        <Style>Solid</Style>
+                                      </Border>
+                                      <VerticalAlign>Middle</VerticalAlign>
+                                      <PaddingLeft>2pt</PaddingLeft>
+                                      <PaddingRight>2pt</PaddingRight>
+                                      <PaddingTop>2pt</PaddingTop>
+                                      <PaddingBottom>2pt</PaddingBottom>
+                                    </Style>
+                                  </Textbox>
+                                </CellContents>
+                              </TablixHeader>
+                              <TablixMembers>
+                                <TablixMember>
+                                  <TablixHeader>
+                                    <Size>2.32293in</Size>
+                                    <CellContents>
+                                      <Textbox Name="Tamanio3">
+                                        <CanGrow>true</CanGrow>
+                                        <KeepTogether>true</KeepTogether>
+                                        <Paragraphs>
+                                          <Paragraph>
+                                            <TextRuns>
+                                              <TextRun>
+                                                <Value>=Fields!Eventos.Value</Value>
+                                                <Style />
+                                              </TextRun>
+                                            </TextRuns>
+                                            <Style>
+                                              <TextAlign>Left</TextAlign>
+                                            </Style>
+                                          </Paragraph>
+                                        </Paragraphs>
+                                        <rd:DefaultName>Tamanio</rd:DefaultName>
+                                        <Style>
+                                          <Border>
+                                            <Color>LightGrey</Color>
+                                            <Style>Solid</Style>
+                                          </Border>
+                                          <VerticalAlign>Middle</VerticalAlign>
+                                          <PaddingLeft>2pt</PaddingLeft>
+                                          <PaddingRight>2pt</PaddingRight>
+                                          <PaddingTop>2pt</PaddingTop>
+                                          <PaddingBottom>2pt</PaddingBottom>
+                                        </Style>
+                                      </Textbox>
+                                    </CellContents>
+                                  </TablixHeader>
+                                  <TablixMembers>
+                                    <TablixMember>
+                                      <Group Name="Detalles8" />
+                                      <SortExpressions>
+                                        <SortExpression>
+                                          <Value>=Fields!Trigger.Value</Value>
+                                        </SortExpression>
+                                      </SortExpressions>
+                                      <TablixMembers>
+                                        <TablixMember />
+                                      </TablixMembers>
+                                    </TablixMember>
+                                  </TablixMembers>
+                                </TablixMember>
+                              </TablixMembers>
+                            </TablixMember>
+                          </TablixMembers>
+                        </TablixMember>
+                      </TablixMembers>
+                    </TablixMember>
+                  </TablixMembers>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>dsTablasTriggers</DataSetName>
+            <Top>30.00828cm</Top>
+            <Height>1in</Height>
+            <Width>9.3149in</Width>
+            <ZIndex>6</ZIndex>
+            <Visibility>
+              <Hidden>=iif(CountRows()=0,true, false)</Hidden>
+            </Visibility>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+            </Style>
+          </Tablix>
         </ReportItems>
-        <Height>11.87023in</Height>
+        <Height>13.06212in</Height>
         <Style />
       </Body>
-      <Width>15.00689in</Width>
+      <Width>14.97771in</Width>
       <Page>
         <PageHeight>8.5in</PageHeight>
         <PageWidth>11in</PageWidth>
@@ -6240,7 +7105,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
       <DataType>Boolean</DataType>
       <DefaultValue>
         <Values>
-          <Value>false</Value>
+          <Value>true</Value>
         </Values>
       </DefaultValue>
       <Prompt>¿Mostrar Tablas?</Prompt>

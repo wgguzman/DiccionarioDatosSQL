@@ -1,4 +1,4 @@
-﻿DECLARE @pBaseDatos		VARCHAR(MAX) = 'SGA_Soporte';
+﻿DECLARE @pBaseDatos		VARCHAR(MAX) = 'EjemploDB';
 DECLARE @pEsquemas		INT = 1;
 DECLARE @MostrarTablas	BIT = 1;
 
