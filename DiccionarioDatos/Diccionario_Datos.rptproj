@@ -52,10 +52,10 @@
     <DataSource Include="Servidor.rds" />
   </ItemGroup>
   <ItemGroup>
+    <Report Include="DetalleObjetos.rdl" />
     <Report Include="DetalleTablas.rdl" />
     <Report Include="DetalleVistas.rdl" />
     <Report Include="DiccionarioDatos.rdl" />
-    <Report Include="Parametros.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
 </Project>

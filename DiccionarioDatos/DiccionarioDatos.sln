@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{8101
 		Scripts\dsListaProcedimientos.sql = Scripts\dsListaProcedimientos.sql
 		Scripts\dsListaTablas.sql = Scripts\dsListaTablas.sql
 		Scripts\dsListaVistas.sql = Scripts\dsListaVistas.sql
+		Scripts\dsPermisosObjetos.sql = Scripts\dsPermisosObjetos.sql
 		Scripts\dsPrametros.sql = Scripts\dsPrametros.sql
 		Scripts\dsProcedimientos.sql = Scripts\dsProcedimientos.sql
 		Scripts\dsTablas.sql = Scripts\dsTablas.sql

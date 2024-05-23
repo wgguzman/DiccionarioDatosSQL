@@ -1,7 +1,7 @@
-﻿DECLARE @pBaseDatos	VARCHAR(MAX) = 'EjemploDB';
+﻿DECLARE @pBaseDatos	VARCHAR(MAX) = 'sga_soporte';
 DECLARE @pEtiquetas	VARCHAR(MAX) = 'MS_Description';
 DECLARE @pEsquemas	INT = 1;
-DECLARE @pObjetos INT = 1013578649
+DECLARE @pObjetos INT = 1218975569
 
 -- Parámetros de los procedimientos y funciones de una base de datos. 
 
