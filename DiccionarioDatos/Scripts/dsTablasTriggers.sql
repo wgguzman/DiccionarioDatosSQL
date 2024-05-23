@@ -1,7 +1,7 @@
 ﻿DECLARE @pBaseDatos	VARCHAR(MAX) = 'sga_soporte';
 DECLARE @pEtiquetas	VARCHAR(MAX) = 'MS_Description';
 DECLARE @pEsquemas	INT = 1;
-DECLARE @pTablas	INT = 1577928843 --, 1701581100, 1573580644;;
+DECLARE @pTablas	INT = 818974144 --, 1701581100, 1573580644;;
 
 -- Documentación de los triggers de las tablas de una base de datos. 
 
@@ -50,6 +50,7 @@ SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema
 			 INNER JOIN ( SELECT IDTRIGGER = E.OBJECT_ID
 							   , TIPO =STUFF (( SELECT DISTINCT '', '' + D.TYPE_DESC  
 													FROM ' + @pBaseDatos + '.SYS.TRIGGER_EVENTS D
+												   WHERE D.OBJECT_ID = E.OBJECT_ID
 													 FOR XML PATH('''')
 											  ), 1, 1, '''')
 							FROM ' + @pBaseDatos + '.SYS.TRIGGER_EVENTS E

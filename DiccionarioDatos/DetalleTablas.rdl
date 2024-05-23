@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-17T19:37:17.5395754Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-23T16:18:09.2643286Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -796,6 +796,7 @@ SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema
 			 INNER JOIN ( SELECT IDTRIGGER = E.OBJECT_ID
 							   , TIPO =STUFF (( SELECT DISTINCT '', '' + D.TYPE_DESC  
 													FROM ' + @pBaseDatos + '.SYS.TRIGGER_EVENTS D
+												   WHERE D.OBJECT_ID = E.OBJECT_ID
 													 FOR XML PATH('''')
 											  ), 1, 1, '''')
 							FROM ' + @pBaseDatos + '.SYS.TRIGGER_EVENTS E
@@ -1723,6 +1724,7 @@ DROP TABLE #DiccionarioTemp;
                               <PaddingBottom>2pt</PaddingBottom>
                             </Style>
                           </Textbox>
+                          <rd:Selected>true</rd:Selected>
                         </CellContents>
                       </TablixHeader>
                       <TablixMembers>
