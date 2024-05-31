@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-23T22:40:37.5765115Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-05-29T19:57:06.6472335Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -366,7 +366,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>1.97917in</Width>
+                  <Width>2.64584in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>1.68045in</Width>
@@ -693,7 +693,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsParametros</DataSetName>
             <Height>0.65in</Height>
-            <Width>5.18046in</Width>
+            <Width>5.84713in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
