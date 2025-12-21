@@ -1,7 +1,7 @@
-﻿DECLARE @pBaseDatos	 VARCHAR(MAX) = 'EjemploDB';
+﻿DECLARE @pBaseDatos	 VARCHAR(MAX) = 'SGA_Soporte';
 DECLARE @pEtiquetas	 VARCHAR(MAX) = 'MS_Description';
 DECLARE @pEsquemas	 INT = 1;
-DECLARE @pTablas	 INT = 1701581100 --1589580701 --, 1701581100, 1573580644;;
+DECLARE @pTablas	 INT = 2068202418 --1589580701 --, 1701581100, 1573580644;;
 
 -- Documentación de campos de las tablas de una base de datos. 
 

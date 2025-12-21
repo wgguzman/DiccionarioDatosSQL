@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>17.9.34902.65</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-07-27T15:24:26.9147205Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2024-08-20T04:03:03.1903704Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -5161,10 +5161,9 @@ DROP TABLE #DiccionarioTemp;</CommandText>
     <ReportParameter Name="pEtiquetas">
       <DataType>String</DataType>
       <DefaultValue>
-        <DataSetReference>
-          <DataSetName>dsEtiquetas</DataSetName>
-          <ValueField>Etiqueta</ValueField>
-        </DataSetReference>
+        <Values>
+          <Value>MS_Description</Value>
+        </Values>
       </DefaultValue>
       <Prompt>Etiquetas:</Prompt>
       <ValidValues>

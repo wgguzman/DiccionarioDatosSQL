@@ -2,7 +2,7 @@
 <RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="Servidor">
   <ConnectionProperties>
     <Extension>SQL</Extension>
-    <ConnectString>Data Source=HERGUZCR</ConnectString>
+    <ConnectString>Data Source=HITO;Initial Catalog=SGA_Soporte</ConnectString>
     <IntegratedSecurity>true</IntegratedSecurity>
   </ConnectionProperties>
   <DataSourceID>8ac026e7-8aeb-4bfb-8e32-38361114cd06</DataSourceID>
