@@ -1,121 +1,141 @@
-﻿DECLARE @pBaseDatos				VARCHAR(MAX) = 'SGA_Soporte';
-DECLARE @pEtiquetas				VARCHAR(MAX) = 'MS_Description';
-DECLARE @pEsquemas				INT = 1;
-DECLARE @pTablas				INT = 2060586429--1589580701 --, 1701581100, 1573580644;
-
--- Documentación de las llaves de las tablas de una base de datos. 
+﻿DECLARE @pBaseDatos              VARCHAR(MAX) = 'SGA_Soporte';
+DECLARE @pEtiquetas              VARCHAR(MAX) = 'MS_Description';
+DECLARE @pEsquemas               INT = 1;
+DECLARE @pTablas                 INT = 60071500;
 
 DECLARE @vSQL VARCHAR(MAX) = '';
 
 DROP TABLE IF EXISTS #DiccionarioTemp;
 
 CREATE TABLE #DiccionarioTemp(
-	  IDEsquema			 INT 
-	, IDTabla				INT
-	, Tabla				VARCHAR(MAX) 
-	, IDColumna			INT 
-	, Columna				VARCHAR(MAX) 
-	, TipoLlave			 VARCHAR(MAX) 
-	, NombreLlave		 VARCHAR(MAX) 
-	, TablaReferenciaFK	 VARCHAR(MAX) 
-	, ColumnaReferenciaFK VARCHAR(MAX) 
-	, TipoBorradoFK		 VARCHAR(MAX) 
-	, TipoActualizacionFK VARCHAR(MAX) 
-	, Etiqueta			 VARCHAR(MAX) 
-	, DescripcionLlave	 VARCHAR(MAX) 
-	);
-SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema 
-										   , IDTabla 
-										   , Tabla
-										   , IDColumna 
-										   , Columna
-										   , TipoLlave 
-										   , NombreLlave 
-										   , TablaReferenciaFK 
-										   , ColumnaReferenciaFK 
-										   , TipoBorradoFK 
-										   , TipoActualizacionFK 
-										   , Etiqueta 
-										   , DescripcionLlave) 
-			 SELECT IDEsquema			 = CONVERT(INT, E.SCHEMA_ID) 
-			      , IDTabla				 = CONVERT(INT, T.OBJECT_ID) 
-				  , Tabla				 = CONVERT(VARCHAR(MAX), T.NAME) 
-				  , IDColumna			 = CONVERT(INT, C.COLUMN_ID)
-				  , Columna				 = CONVERT(VARCHAR(MAX), C.NAME)
-			      , TipoLlave			 = CONVERT(VARCHAR(MAX), L.TIPOLLAVE) 
-			      , NombreLlave			 = CONVERT(VARCHAR(MAX), L.NOMBRELLAVE) 
-			      , TablaReferenciaFK	 = CONVERT(VARCHAR(MAX), TR.NAME) 
-			      , ColumnaReferenciaFK	 = CONVERT(VARCHAR(MAX), CR.NAME) 
-			      , TipoBorradoFK		 = CONVERT(VARCHAR(MAX), F.BORRADO_FK) 
-			      , TipoActualizacionFK	 = CONVERT(VARCHAR(MAX), F.ACTUALIZADO_FK) 
-			      , Etiqueta			 = CONVERT(VARCHAR(MAX), D.NAME) 
-			      , DescripcionLlave	 =  CONVERT(VARCHAR(MAX), D.VALUE) 
-			   FROM ' + @pBaseDatos + '.SYS.SCHEMAS E
-			  INNER JOIN ' + @pBaseDatos + '.SYS.TABLES T  
-			     ON E.SCHEMA_ID = T.SCHEMA_ID
-			    AND T.NAME != ''sysdiagrams'' 
-			  INNER JOIN ' + @pBaseDatos + '.SYS.COLUMNS C
-			     ON T.OBJECT_ID = C.OBJECT_ID 
-			  INNER JOIN (SELECT ESQUEMA	  = K.TABLE_SCHEMA 
-			       	 		   , TABLA		  = K.TABLE_NAME 
-			       	 		   , TIPOLLAVE	  = K.CONSTRAINT_TYPE 
-			       	 		   , COLUMNA	  = U.COLUMN_NAME 
-			       	 		   , NOMBRELLAVE = K.CONSTRAINT_NAME 
-			       	 		FROM ' + @pBaseDatos + '.INFORMATION_SCHEMA.TABLE_CONSTRAINTS K 
-			       	 	   INNER JOIN ' + @pBaseDatos + '.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE U 
-			       	 		  ON K.CONSTRAINT_CATALOG = U.CONSTRAINT_CATALOG 
-			       	 		  AND K.CONSTRAINT_SCHEMA = U.CONSTRAINT_SCHEMA 
-			       	 		  AND k.CONSTRAINT_NAME   = U.CONSTRAINT_NAME) L 
-			     ON L.ESQUEMA = E.NAME
-			    AND L.TABLA	  = T.NAME
-			    AND L.COLUMNA = C.NAME
-			   LEFT JOIN (SELECT FOREIGNKEY			 = F.NAME 
-							   , IDESQUEMA			 = F.SCHEMA_ID 
-           	       	  		   , IDTABLA			 = F.PARENT_OBJECT_ID 
-           	       	  		   , IDCOLUMNA			 = FC.PARENT_COLUMN_ID 
-           	       	  		   , IDTABLAREFERENCIA   = F.REFERENCED_OBJECT_ID 
-           	       	  		   , IDCOLUMNAREFERENCIA = FC.REFERENCED_COLUMN_ID 
-           	       	  		   , BORRADO_FK			 = F.DELETE_REFERENTIAL_ACTION_DESC 
-           	       	  		   , ACTUALIZADO_FK		 = F.UPDATE_REFERENTIAL_ACTION_DESC 
-			       	  		FROM ' + @pBaseDatos + '.SYS.FOREIGN_KEYS F
-			       	  	   INNER JOIN ' + @pBaseDatos + '.SYS.FOREIGN_KEY_COLUMNS FC 
-			       	  		  ON F.OBJECT_ID = FC.CONSTRAINT_OBJECT_ID) F
-			     ON F.FOREIGNKEY = L.NOMBRELLAVE
-		        AND F.IDESQUEMA	 = T.SCHEMA_ID
-		        AND F.IDTABLA    = C.OBJECT_ID
-		        AND F.IDCOLUMNA  = C.COLUMN_ID 
-		       LEFT JOIN  ' + @pBaseDatos + '.SYS.OBJECTS TR
-		         ON TR.OBJECT_ID = F.IDTABLAREFERENCIA
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.COLUMNS CR
-		      	 ON CR.OBJECT_ID = F.IDTABLAREFERENCIA
-		        AND CR.COLUMN_ID = F.IDCOLUMNAREFERENCIA							 
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.OBJECTS O
-		         ON L.NOMBRELLAVE = O.NAME									 
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.EXTENDED_PROPERTIES D 
-		      	 ON D.MAJOR_ID   = O.OBJECT_ID
-		        AND D.MINOR_ID   = 0
-				AND D.NAME		 NOT LIKE ''MS_Diagram%'' 
-		        AND D.CLASS_DESC = ''OBJECT_OR_COLUMN'';'
-EXEC (@vSQL); 
+      IDEsquema              INT 
+    , IDTabla                INT
+    , Tabla                  VARCHAR(MAX) 
+    , IDColumna              INT 
+    , Columna                VARCHAR(MAX) 
+    , TipoLlave              VARCHAR(MAX) 
+    , NombreLlave            VARCHAR(MAX) 
+    , TablaReferenciaFK      VARCHAR(MAX) 
+    , ColumnaReferenciaFK    VARCHAR(MAX) 
+    , TipoBorradoFK          VARCHAR(MAX) 
+    , TipoActualizacionFK    VARCHAR(MAX) 
+    , Etiqueta               VARCHAR(MAX) 
+    , DescripcionLlave       VARCHAR(MAX)
+    , FormulaCheck           VARCHAR(MAX)  
+);
 
-SELECT IDEsquema			 
-	 , IDTabla			 
-	 , Tabla 
-	 , IDColumna 
-	 , Columna 
-	 , TipoLlave 
-	 , NombreLlave 
-	 , TablaReferenciaFK 
-	 , ColumnaReferenciaFK 
-	 , TipoBorradoFK 
-	 , TipoActualizacionFK 
-	 , Etiqueta	
-	 , DescripcionLlave 
-  FROM #DiccionarioTemp 
- WHERE IDEsquema IN (@pEsquemas)
-   AND IDTabla   IN (@pTablas)
-   AND (ISNULL(Etiqueta, '') = '' OR Etiqueta IN (@pEtiquetas))
- ORDER BY IDColumna, Etiqueta;
+SET @vSQL = '
+INSERT INTO #DiccionarioTemp (
+      IDEsquema 
+    , IDTabla 
+    , Tabla
+    , IDColumna 
+    , Columna
+    , TipoLlave 
+    , NombreLlave 
+    , TablaReferenciaFK 
+    , ColumnaReferenciaFK 
+    , TipoBorradoFK 
+    , TipoActualizacionFK 
+    , Etiqueta 
+    , DescripcionLlave
+    , FormulaCheck
+)
+SELECT 
+      IDEsquema             = CONVERT(INT, E.SCHEMA_ID)
+    , IDTabla               = CONVERT(INT, T.OBJECT_ID)
+    , Tabla                 = CONVERT(VARCHAR(MAX), T.NAME)
+    , IDColumna             = CONVERT(INT, C.COLUMN_ID)
+    , Columna               = CONVERT(VARCHAR(MAX), C.NAME)
+    , TipoLlave             = CONVERT(VARCHAR(MAX), L.TIPOLLAVE)
+    , NombreLlave           = CONVERT(VARCHAR(MAX), L.NOMBRELLAVE)
+    , TablaReferenciaFK     = CONVERT(VARCHAR(MAX), TR.NAME)
+    , ColumnaReferenciaFK   = CONVERT(VARCHAR(MAX), CR.NAME)
+    , TipoBorradoFK         = CONVERT(VARCHAR(MAX), F.BORRADO_FK)
+    , TipoActualizacionFK   = CONVERT(VARCHAR(MAX), F.ACTUALIZADO_FK)
+    , Etiqueta              = CONVERT(VARCHAR(MAX), D.NAME)
+    , DescripcionLlave      = CONVERT(VARCHAR(MAX), D.VALUE)
+    , FormulaCheck          = CONVERT(VARCHAR(MAX), CHK.definition)   -- CHECK FORMULA
+FROM ' + @pBaseDatos + '.sys.schemas E
+INNER JOIN ' + @pBaseDatos + '.sys.tables T  
+        ON E.schema_id = T.schema_id
+       AND T.name != ''sysdiagrams''
+INNER JOIN ' + @pBaseDatos + '.sys.columns C
+        ON T.object_id = C.object_id
+LEFT JOIN (
+        SELECT 
+              ESQUEMA        = K.table_schema
+            , TABLA          = K.table_name
+            , TIPOLLAVE      = K.constraint_type
+            , COLUMNA        = U.column_name
+            , NOMBRELLAVE    = K.constraint_name
+        FROM ' + @pBaseDatos + '.INFORMATION_SCHEMA.table_constraints K
+        INNER JOIN ' + @pBaseDatos + '.INFORMATION_SCHEMA.constraint_column_usage U
+                ON K.constraint_catalog = U.constraint_catalog
+               AND K.constraint_schema  = U.constraint_schema
+               AND K.constraint_name    = U.constraint_name
+) L
+        ON L.ESQUEMA = E.name
+       AND L.TABLA   = T.name
+       AND L.COLUMNA = C.name
+LEFT JOIN (
+        SELECT 
+              FOREIGNKEY             = F.name
+            , IDESQUEMA             = F.schema_id
+            , IDTABLA               = F.parent_object_id
+            , IDCOLUMNA             = FC.parent_column_id
+            , IDTABLAREFERENCIA     = F.referenced_object_id
+            , IDCOLUMNAREFERENCIA   = FC.referenced_column_id
+            , BORRADO_FK            = F.delete_referential_action_desc
+            , ACTUALIZADO_FK        = F.update_referential_action_desc
+        FROM ' + @pBaseDatos + '.sys.foreign_keys F
+        INNER JOIN ' + @pBaseDatos + '.sys.foreign_key_columns FC
+                ON F.object_id = FC.constraint_object_id
+) F
+        ON F.FOREIGNKEY = L.NOMBRELLAVE
+       AND F.IDESQUEMA = T.schema_id
+       AND F.IDTABLA   = C.object_id
+       AND F.IDCOLUMNA = C.column_id
+LEFT JOIN ' + @pBaseDatos + '.sys.objects TR
+        ON TR.object_id = F.IDTABLAREFERENCIA
+LEFT JOIN ' + @pBaseDatos + '.sys.columns CR
+        ON CR.object_id = F.IDTABLAREFERENCIA
+       AND CR.column_id = F.IDCOLUMNAREFERENCIA
+LEFT JOIN ' + @pBaseDatos + '.sys.objects O
+        ON L.NOMBRELLAVE = O.name
+LEFT JOIN ' + @pBaseDatos + '.sys.extended_properties D
+        ON D.major_id = O.object_id
+       AND D.minor_id = 0
+       AND D.name NOT LIKE ''MS_Diagram%''
+       AND D.class_desc = ''OBJECT_OR_COLUMN''
+LEFT JOIN ' + @pBaseDatos + '.sys.check_constraints CHK
+        ON CHK.parent_object_id = T.object_id
+       AND CHK.name = L.NOMBRELLAVE   -- CHECK asociado al constraint
+';
+
+EXEC (@vSQL);
+
+SELECT 
+      IDEsquema          
+    , IDTabla            
+    , Tabla 
+    , IDColumna 
+    , Columna 
+    , TipoLlave 
+    , NombreLlave 
+    , TablaReferenciaFK 
+    , ColumnaReferenciaFK 
+    , TipoBorradoFK 
+    , TipoActualizacionFK 
+    , Etiqueta  
+    , DescripcionLlave 
+    , FormulaCheck
+FROM #DiccionarioTemp 
+WHERE IDEsquema IN (@pEsquemas)
+  AND IDTabla   IN (@pTablas)
+  AND (ISNULL(Etiqueta, '') = '' OR Etiqueta IN (@pEtiquetas))
+ORDER BY IDColumna, Etiqueta;
 
 DROP TABLE #DiccionarioTemp;
+
 

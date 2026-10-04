@@ -1,7 +1,7 @@
 ﻿DECLARE @pBaseDatos	VARCHAR(MAX) = 'sga_soporte';
 DECLARE @pEtiquetas	VARCHAR(MAX) = 'MS_Description';
 DECLARE @pEsquemas	INT = 1;
-DECLARE @pTablas	INT = 818974144 --, 1701581100, 1573580644;;
+DECLARE @pTablas	INT = 255548194 --, 1701581100, 1573580644;;
 
 -- Documentación de los triggers de las tablas de una base de datos. 
 

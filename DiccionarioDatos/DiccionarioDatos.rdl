@@ -7,9 +7,9 @@
     </am:CreatedBy>
     <am:UpdatedBy>
       <am:Name>SSDTRS</am:Name>
-      <am:Version>17.9.34902.65</am:Version>
+      <am:Version>17.14.37628.2</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-08-20T04:03:03.1903704Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-10-03T22:05:17.7262989Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -1431,6 +1431,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -1717,6 +1718,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -2173,6 +2175,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -3016,6 +3019,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -3692,6 +3696,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -4482,6 +4487,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -4489,6 +4495,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                   <PaddingBottom>2pt</PaddingBottom>
                                 </Style>
                               </Textbox>
+                              <rd:Selected>true</rd:Selected>
                             </CellContents>
                           </TablixHeader>
                         </TablixMember>

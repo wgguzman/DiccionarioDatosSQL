@@ -7,9 +7,9 @@
     </am:CreatedBy>
     <am:UpdatedBy>
       <am:Name>SSDTRS</am:Name>
-      <am:Version>17.9.34902.65</am:Version>
+      <am:Version>17.14.37628.2</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-23T19:51:01.1914041Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-10-04T15:33:40.8374256Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -412,115 +412,136 @@ DECLARE @vSQL VARCHAR(MAX) = '';
 DROP TABLE IF EXISTS #DiccionarioTemp;
 
 CREATE TABLE #DiccionarioTemp(
-	  IDEsquema			 INT 
-	, IDTabla				INT
-	, Tabla				VARCHAR(MAX) 
-	, IDColumna			INT 
-	, Columna				VARCHAR(MAX) 
-	, TipoLlave			 VARCHAR(MAX) 
-	, NombreLlave		 VARCHAR(MAX) 
-	, TablaReferenciaFK	 VARCHAR(MAX) 
-	, ColumnaReferenciaFK VARCHAR(MAX) 
-	, TipoBorradoFK		 VARCHAR(MAX) 
-	, TipoActualizacionFK VARCHAR(MAX) 
-	, Etiqueta			 VARCHAR(MAX) 
-	, DescripcionLlave	 VARCHAR(MAX) 
-	);
-SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema 
-										   , IDTabla 
-										   , Tabla
-										   , IDColumna 
-										   , Columna
-										   , TipoLlave 
-										   , NombreLlave 
-										   , TablaReferenciaFK 
-										   , ColumnaReferenciaFK 
-										   , TipoBorradoFK 
-										   , TipoActualizacionFK 
-										   , Etiqueta 
-										   , DescripcionLlave) 
-			 SELECT IDEsquema			 = CONVERT(INT, E.SCHEMA_ID) 
-			      , IDTabla				 = CONVERT(INT, T.OBJECT_ID) 
-				  , Tabla				 = CONVERT(VARCHAR(MAX), T.NAME) 
-				  , IDColumna			 = CONVERT(INT, C.COLUMN_ID)
-				  , Columna				 = CONVERT(VARCHAR(MAX), C.NAME)
-			      , TipoLlave			 = CONVERT(VARCHAR(MAX), L.TIPOLLAVE) 
-			      , NombreLlave			 = CONVERT(VARCHAR(MAX), L.NOMBRELLAVE) 
-			      , TablaReferenciaFK	 = CONVERT(VARCHAR(MAX), TR.NAME) 
-			      , ColumnaReferenciaFK	 = CONVERT(VARCHAR(MAX), CR.NAME) 
-			      , TipoBorradoFK		 = CONVERT(VARCHAR(MAX), F.BORRADO_FK) 
-			      , TipoActualizacionFK	 = CONVERT(VARCHAR(MAX), F.ACTUALIZADO_FK) 
-			      , Etiqueta			 = CONVERT(VARCHAR(MAX), D.NAME) 
-			      , DescripcionLlave	 =  CONVERT(VARCHAR(MAX), D.VALUE) 
-			   FROM ' + @pBaseDatos + '.SYS.SCHEMAS E
-			  INNER JOIN ' + @pBaseDatos + '.SYS.TABLES T  
-			     ON E.SCHEMA_ID = T.SCHEMA_ID
-			    AND T.NAME != ''sysdiagrams'' 
-			  INNER JOIN ' + @pBaseDatos + '.SYS.COLUMNS C
-			     ON T.OBJECT_ID = C.OBJECT_ID 
-			  INNER JOIN (SELECT ESQUEMA	  = K.TABLE_SCHEMA 
-			       	 		   , TABLA		  = K.TABLE_NAME 
-			       	 		   , TIPOLLAVE	  = K.CONSTRAINT_TYPE 
-			       	 		   , COLUMNA	  = U.COLUMN_NAME 
-			       	 		   , NOMBRELLAVE = K.CONSTRAINT_NAME 
-			       	 		FROM ' + @pBaseDatos + '.INFORMATION_SCHEMA.TABLE_CONSTRAINTS K 
-			       	 	   INNER JOIN ' + @pBaseDatos + '.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE U 
-			       	 		  ON K.CONSTRAINT_CATALOG = U.CONSTRAINT_CATALOG 
-			       	 		  AND K.CONSTRAINT_SCHEMA = U.CONSTRAINT_SCHEMA 
-			       	 		  AND k.CONSTRAINT_NAME   = U.CONSTRAINT_NAME) L 
-			     ON L.ESQUEMA = E.NAME
-			    AND L.TABLA	  = T.NAME
-			    AND L.COLUMNA = C.NAME
-			   LEFT JOIN (SELECT FOREIGNKEY			 = F.NAME 
-							   , IDESQUEMA			 = F.SCHEMA_ID 
-           	       	  		   , IDTABLA			 = F.PARENT_OBJECT_ID 
-           	       	  		   , IDCOLUMNA			 = FC.PARENT_COLUMN_ID 
-           	       	  		   , IDTABLAREFERENCIA   = F.REFERENCED_OBJECT_ID 
-           	       	  		   , IDCOLUMNAREFERENCIA = FC.REFERENCED_COLUMN_ID 
-           	       	  		   , BORRADO_FK			 = F.DELETE_REFERENTIAL_ACTION_DESC 
-           	       	  		   , ACTUALIZADO_FK		 = F.UPDATE_REFERENTIAL_ACTION_DESC 
-			       	  		FROM ' + @pBaseDatos + '.SYS.FOREIGN_KEYS F
-			       	  	   INNER JOIN ' + @pBaseDatos + '.SYS.FOREIGN_KEY_COLUMNS FC 
-			       	  		  ON F.OBJECT_ID = FC.CONSTRAINT_OBJECT_ID) F
-			     ON F.FOREIGNKEY = L.NOMBRELLAVE
-		        AND F.IDESQUEMA	 = T.SCHEMA_ID
-		        AND F.IDTABLA    = C.OBJECT_ID
-		        AND F.IDCOLUMNA  = C.COLUMN_ID 
-		       LEFT JOIN  ' + @pBaseDatos + '.SYS.OBJECTS TR
-		         ON TR.OBJECT_ID = F.IDTABLAREFERENCIA
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.COLUMNS CR
-		      	 ON CR.OBJECT_ID = F.IDTABLAREFERENCIA
-		        AND CR.COLUMN_ID = F.IDCOLUMNAREFERENCIA							 
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.OBJECTS O
-		         ON L.NOMBRELLAVE = O.NAME									 
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.EXTENDED_PROPERTIES D 
-		      	 ON D.MAJOR_ID   = O.OBJECT_ID
-		        AND D.MINOR_ID   = 0
-		        AND D.CLASS_DESC = ''OBJECT_OR_COLUMN'';'
-EXEC (@vSQL); 
+      IDEsquema              INT 
+    , IDTabla                INT
+    , Tabla                  VARCHAR(MAX) 
+    , IDColumna              INT 
+    , Columna                VARCHAR(MAX) 
+    , TipoLlave              VARCHAR(MAX) 
+    , NombreLlave            VARCHAR(MAX) 
+    , TablaReferenciaFK      VARCHAR(MAX) 
+    , ColumnaReferenciaFK    VARCHAR(MAX) 
+    , TipoBorradoFK          VARCHAR(MAX) 
+    , TipoActualizacionFK    VARCHAR(MAX) 
+    , Etiqueta               VARCHAR(MAX) 
+    , DescripcionLlave       VARCHAR(MAX)
+    , FormulaCheck           VARCHAR(MAX)  
+);
 
-SELECT IDEsquema			 
-	 , IDTabla			 
-	 , Tabla 
-	 , IDColumna 
-	 , Columna 
-	 , TipoLlave 
-	 , NombreLlave 
-	 , TablaReferenciaFK 
-	 , ColumnaReferenciaFK 
-	 , TipoBorradoFK 
-	 , TipoActualizacionFK 
-	 , Etiqueta	
-	 , DescripcionLlave 
-  FROM #DiccionarioTemp 
- WHERE IDEsquema IN (@pEsquemas)
-   AND IDTabla   IN (@pTablas)
-   AND (ISNULL(Etiqueta, '') = '' OR Etiqueta IN (@pEtiquetas))
- ORDER BY IDColumna, Etiqueta;
+SET @vSQL = '
+INSERT INTO #DiccionarioTemp (
+      IDEsquema 
+    , IDTabla 
+    , Tabla
+    , IDColumna 
+    , Columna
+    , TipoLlave 
+    , NombreLlave 
+    , TablaReferenciaFK 
+    , ColumnaReferenciaFK 
+    , TipoBorradoFK 
+    , TipoActualizacionFK 
+    , Etiqueta 
+    , DescripcionLlave
+    , FormulaCheck
+)
+SELECT 
+      IDEsquema             = CONVERT(INT, E.SCHEMA_ID)
+    , IDTabla               = CONVERT(INT, T.OBJECT_ID)
+    , Tabla                 = CONVERT(VARCHAR(MAX), T.NAME)
+    , IDColumna             = CONVERT(INT, C.COLUMN_ID)
+    , Columna               = CONVERT(VARCHAR(MAX), C.NAME)
+    , TipoLlave             = CONVERT(VARCHAR(MAX), L.TIPOLLAVE)
+    , NombreLlave           = CONVERT(VARCHAR(MAX), L.NOMBRELLAVE)
+    , TablaReferenciaFK     = CONVERT(VARCHAR(MAX), TR.NAME)
+    , ColumnaReferenciaFK   = CONVERT(VARCHAR(MAX), CR.NAME)
+    , TipoBorradoFK         = CONVERT(VARCHAR(MAX), F.BORRADO_FK)
+    , TipoActualizacionFK   = CONVERT(VARCHAR(MAX), F.ACTUALIZADO_FK)
+    , Etiqueta              = CONVERT(VARCHAR(MAX), D.NAME)
+    , DescripcionLlave      = CONVERT(VARCHAR(MAX), D.VALUE)
+    , FormulaCheck          = CONVERT(VARCHAR(MAX), CHK.definition)   -- CHECK FORMULA
+FROM ' + @pBaseDatos + '.sys.schemas E
+INNER JOIN ' + @pBaseDatos + '.sys.tables T  
+        ON E.schema_id = T.schema_id
+       AND T.name != ''sysdiagrams''
+INNER JOIN ' + @pBaseDatos + '.sys.columns C
+        ON T.object_id = C.object_id
+LEFT JOIN (
+        SELECT 
+              ESQUEMA        = K.table_schema
+            , TABLA          = K.table_name
+            , TIPOLLAVE      = K.constraint_type
+            , COLUMNA        = U.column_name
+            , NOMBRELLAVE    = K.constraint_name
+        FROM ' + @pBaseDatos + '.INFORMATION_SCHEMA.table_constraints K
+        INNER JOIN ' + @pBaseDatos + '.INFORMATION_SCHEMA.constraint_column_usage U
+                ON K.constraint_catalog = U.constraint_catalog
+               AND K.constraint_schema  = U.constraint_schema
+               AND K.constraint_name    = U.constraint_name
+) L
+        ON L.ESQUEMA = E.name
+       AND L.TABLA   = T.name
+       AND L.COLUMNA = C.name
+LEFT JOIN (
+        SELECT 
+              FOREIGNKEY             = F.name
+            , IDESQUEMA             = F.schema_id
+            , IDTABLA               = F.parent_object_id
+            , IDCOLUMNA             = FC.parent_column_id
+            , IDTABLAREFERENCIA     = F.referenced_object_id
+            , IDCOLUMNAREFERENCIA   = FC.referenced_column_id
+            , BORRADO_FK            = F.delete_referential_action_desc
+            , ACTUALIZADO_FK        = F.update_referential_action_desc
+        FROM ' + @pBaseDatos + '.sys.foreign_keys F
+        INNER JOIN ' + @pBaseDatos + '.sys.foreign_key_columns FC
+                ON F.object_id = FC.constraint_object_id
+) F
+        ON F.FOREIGNKEY = L.NOMBRELLAVE
+       AND F.IDESQUEMA = T.schema_id
+       AND F.IDTABLA   = C.object_id
+       AND F.IDCOLUMNA = C.column_id
+LEFT JOIN ' + @pBaseDatos + '.sys.objects TR
+        ON TR.object_id = F.IDTABLAREFERENCIA
+LEFT JOIN ' + @pBaseDatos + '.sys.columns CR
+        ON CR.object_id = F.IDTABLAREFERENCIA
+       AND CR.column_id = F.IDCOLUMNAREFERENCIA
+LEFT JOIN ' + @pBaseDatos + '.sys.objects O
+        ON L.NOMBRELLAVE = O.name
+LEFT JOIN ' + @pBaseDatos + '.sys.extended_properties D
+        ON D.major_id = O.object_id
+       AND D.minor_id = 0
+       AND D.name NOT LIKE ''MS_Diagram%''
+       AND D.class_desc = ''OBJECT_OR_COLUMN''
+LEFT JOIN ' + @pBaseDatos + '.sys.check_constraints CHK
+        ON CHK.parent_object_id = T.object_id
+       AND CHK.name = L.NOMBRELLAVE   -- CHECK asociado al constraint
+';
 
-DROP TABLE #DiccionarioTemp;
+EXEC (@vSQL);
 
-</CommandText>
+SELECT 
+      IDEsquema          
+    , IDTabla            
+    , Tabla 
+    , IDColumna 
+    , Columna 
+    , TipoLlave 
+    , NombreLlave 
+    , TablaReferenciaFK 
+    , ColumnaReferenciaFK 
+    , TipoBorradoFK 
+    , TipoActualizacionFK 
+    , Etiqueta  
+    , DescripcionLlave 
+    , FormulaCheck
+FROM #DiccionarioTemp 
+WHERE IDEsquema IN (@pEsquemas)
+  AND IDTabla   IN (@pTablas)
+  AND (ISNULL(Etiqueta, '') = '' OR Etiqueta IN (@pEtiquetas))
+ORDER BY IDColumna, Etiqueta;
+
+DROP TABLE #DiccionarioTemp;</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="IDEsquema">
@@ -575,6 +596,10 @@ DROP TABLE #DiccionarioTemp;
           <DataField>DescripcionLlave</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="FormulaCheck">
+          <DataField>FormulaCheck</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
       </Fields>
     </DataSet>
     <DataSet Name="dsTablasIndices">
@@ -601,85 +626,97 @@ DECLARE @vSQL VARCHAR(MAX) = '';
 DROP TABLE IF EXISTS #DiccionarioTemp;
 
 CREATE TABLE #DiccionarioTemp(
-	   IDEsquema		 INT 
-	 , IDTabla			 INT 
-	 , Tabla			 VARCHAR(MAX) 
-	 , IDColumna		 INT 
-	 , Columna			 VARCHAR(MAX) 
-	 , IDIndice			 INT 
-	 , Indice			 VARCHAR(MAX) 
-	 , TipoIndice		 VARCHAR(MAX) 
-	 , Inactivo			 BIT 
-	 , Unico			 BIT
-	 , Etiqueta			 VARCHAR(MAX) 
-	 , DescripcionIndice VARCHAR(MAX)
-	);
-SET @vSQL = 'INSERT INTO #DiccionarioTemp (  IDEsquema 
-										   , IDTabla 
-										   , Tabla 
-										   , IDColumna 
-										   , Columna 
-										   , IDIndice
-										   , Indice 
-										   , TipoIndice 
-										   , Inactivo
-										   , Unico
-										   , Etiqueta 
-										   , DescripcionIndice) 
-			 SELECT IDEsquema			= CONVERT(INT, E.SCHEMA_ID) 
-				  , IDTabla				= CONVERT(INT, T.OBJECT_ID) 
-				  , Tabla				= CONVERT(VARCHAR(MAX), T.NAME) 
-				  , IDColumna			= CONVERT(INT, C.COLUMN_ID) 
-				  , Columna				= CONVERT(VARCHAR(MAX), C.NAME) 
-				  , IDIndice			= CONVERT(INT, I.INDEX_ID) 
-				  , Indice				= CONVERT(VARCHAR(MAX), I.NAME ) 
-				  , TipoIndice			= CONVERT(VARCHAR(MAX), CASE WHEN I.IS_PRIMARY_KEY = 1 THEN ''PRIMARY KEY'' WHEN I.IS_UNIQUE_CONSTRAINT = 1 THEN ''UNIQUE'' ELSE ''INDEX'' END) 
-				  , Inactivo			= I.IS_DISABLED  
-				  , Unico				= I.IS_UNIQUE 
-				  , Etiqueta			= CONVERT(VARCHAR(MAX), D.NAME) 
-				  , DescripcionIndice	= CONVERT(VARCHAR(MAX), D.VALUE) 
- 			   FROM ' + @pBaseDatos + '.SYS.SCHEMAS E
-			  INNER JOIN ' + @pBaseDatos + '.SYS.TABLES T  
-				 ON E.SCHEMA_ID = T.SCHEMA_ID
-			    AND T.NAME != ''sysdiagrams'' 
-			  INNER JOIN ' + @pBaseDatos + '.SYS.COLUMNS C
-			     ON C.OBJECT_ID = T.OBJECT_ID 
-			  INNER JOIN ' + @pBaseDatos + '.SYS.INDEXES I
-			     ON I.OBJECT_ID = C.OBJECT_ID
-			  INNER JOIN ' + @pBaseDatos + '.SYS.INDEX_COLUMNS IC
-				 ON IC.INDEX_ID		 = I.INDEX_ID
-			    AND IC.OBJECT_ID	 = I.OBJECT_ID
-				AND IC.COLUMN_ID	 = C.COLUMN_ID
-				AND I.IS_PRIMARY_KEY = 0
-			  INNER JOIN ' + @pBaseDatos + '.SYS.OBJECTS O
- 			     ON O.NAME = I.NAME
-		       LEFT JOIN ' + @pBaseDatos + '.SYS.EXTENDED_PROPERTIES D
-		      	 ON D.MAJOR_ID   = O.OBJECT_ID
-				AND D.NAME		 NOT LIKE ''MS_Diagram%''
-		        AND D.CLASS_DESC = ''OBJECT_OR_COLUMN'';'
+       IDEsquema         INT 
+     , IDTabla           INT 
+     , Tabla             VARCHAR(MAX) 
+     , IDColumna         INT 
+     , Columna           VARCHAR(MAX) 
+     , IDIndice          INT 
+     , Indice            VARCHAR(MAX) 
+     , TipoIndice        VARCHAR(MAX) 
+     , Inactivo          BIT 
+     , Unico             BIT
+     , Etiqueta          VARCHAR(MAX) 
+     , DescripcionIndice VARCHAR(MAX)
+);
 
-EXEC (@vSQL); 
+SET @vSQL = '
+INSERT INTO #DiccionarioTemp (
+       IDEsquema 
+     , IDTabla 
+     , Tabla 
+     , IDColumna 
+     , Columna 
+     , IDIndice
+     , Indice 
+     , TipoIndice 
+     , Inactivo
+     , Unico
+     , Etiqueta 
+     , DescripcionIndice)
+SELECT 
+      E.schema_id
+    , T.object_id
+    , T.name
+    , C.column_id
+    , C.name
+    , I.index_id
+    , I.name
+    , CASE  
+          WHEN I.is_primary_key = 1        THEN ''PRIMARY KEY''
+          WHEN I.is_unique_constraint = 1  THEN ''UNIQUE''
+          ELSE ''INDEX''
+      END
+    , I.is_disabled
+    , I.is_unique
 
-SELECT IDEsquema 
-	 , IDTabla 
-	 , Tabla 
-	 , IDColumna 
-	 , Columna 
-	 , IDIndice 
-	 , Indice 
-	 , TipoIndice 
-	 , Inactivo 
-	 , Unico 
-	 , Etiqueta 
-	 , DescripcionIndice 
-  FROM #DiccionarioTemp 
- WHERE IDEsquema IN (@pEsquemas)
-   AND IDTabla   IN (@pTablas)
-   AND (ISNULL(Etiqueta, '') = '' OR Etiqueta IN (@pEtiquetas))
- ORDER BY IDColumna, Etiqueta;
+    , COALESCE(DIdx.name, DKey.name)
+    , COALESCE(CONVERT(VARCHAR(MAX), DIdx.value),
+               CONVERT(VARCHAR(MAX), DKey.value))
 
-DROP TABLE #DiccionarioTemp;
-</CommandText>
+FROM ' + @pBaseDatos + '.sys.schemas E
+INNER JOIN ' + @pBaseDatos + '.sys.tables T
+        ON E.schema_id = T.schema_id
+INNER JOIN ' + @pBaseDatos + '.sys.columns C
+        ON C.object_id = T.object_id
+INNER JOIN ' + @pBaseDatos + '.sys.indexes I
+        ON I.object_id = T.object_id
+       AND I.index_id &gt; 0
+       AND I.is_hypothetical = 0
+       AND I.is_primary_key = 0
+INNER JOIN ' + @pBaseDatos + '.sys.index_columns IC
+        ON IC.object_id = I.object_id
+       AND IC.index_id  = I.index_id
+       AND IC.column_id = C.column_id
+
+-- Comentario del índice
+LEFT JOIN ' + @pBaseDatos + '.sys.extended_properties DIdx
+       ON DIdx.major_id   = I.object_id
+      AND DIdx.minor_id   = I.index_id
+      AND DIdx.class_desc = ''INDEX''
+      AND DIdx.name       = ''' + @pEtiquetas + '''
+
+-- Comentario del UNIQUE KEY (constraint)
+LEFT JOIN ' + @pBaseDatos + '.sys.key_constraints KC
+       ON KC.parent_object_id = T.object_id
+      AND KC.unique_index_id  = I.index_id
+LEFT JOIN ' + @pBaseDatos + '.sys.extended_properties DKey
+       ON DKey.major_id   = KC.object_id
+      AND DKey.minor_id   = 0
+      AND DKey.class_desc = ''OBJECT_OR_COLUMN''
+      AND DKey.name       = ''' + @pEtiquetas + '''
+';
+
+EXEC(@vSQL);
+
+SELECT *
+FROM #DiccionarioTemp
+WHERE IDEsquema = @pEsquemas
+  AND IDTabla   = @pTablas
+ORDER BY IDColumna, Etiqueta;
+
+DROP TABLE #DiccionarioTemp;</CommandText>
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
         <Field Name="IDEsquema">
@@ -1171,6 +1208,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=iif(IsNothing(Fields!DescripcionColumna.Value), "Red", "Transparent")</BackgroundColor>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -1856,6 +1894,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!DescripcionLlave.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -2241,7 +2280,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               </Filter>
             </Filters>
             <Top>1.89045in</Top>
-            <Left>0cm</Left>
             <Height>2.2in</Height>
             <Width>11.3923in</Width>
             <ZIndex>1</ZIndex>
@@ -2736,6 +2774,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!DescripcionIndice.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -3112,7 +3151,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsTablasIndices</DataSetName>
             <Top>9.51398in</Top>
-            <Left>0cm</Left>
             <Height>2.2in</Height>
             <Width>11.37464in</Width>
             <ZIndex>2</ZIndex>
@@ -3641,6 +3679,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!DescripcionLlave.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -4977,6 +5016,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     <Color>LightGrey</Color>
                                     <Style>Solid</Style>
                                   </Border>
+                                  <BackgroundColor>=iif(IsNothing(Fields!DescripcionLlave.Value), "Red", "Transparent")</BackgroundColor>
                                   <VerticalAlign>Middle</VerticalAlign>
                                   <PaddingLeft>2pt</PaddingLeft>
                                   <PaddingRight>2pt</PaddingRight>
@@ -5000,7 +5040,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <TablixBody>
                               <TablixColumns>
                                 <TablixColumn>
-                                  <Width>0.03125in</Width>
+                                  <Width>6.22447in</Width>
                                 </TablixColumn>
                               </TablixColumns>
                               <TablixRows>
@@ -5009,33 +5049,33 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                   <TablixCells>
                                     <TablixCell>
                                       <CellContents>
-                                        <Textbox Name="Textbox38">
+                                        <Textbox Name="Textbox124">
                                           <CanGrow>true</CanGrow>
                                           <KeepTogether>true</KeepTogether>
                                           <Paragraphs>
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value />
+                                                  <Value>Formula del Check</Value>
                                                   <Style>
-                                                    <FontFamily>Arial</FontFamily>
-                                                    <Color>#e8f1ff</Color>
+                                                    <FontSize>11pt</FontSize>
+                                                    <FontWeight>Bold</FontWeight>
                                                   </Style>
                                                 </TextRun>
                                               </TextRuns>
-                                              <Style />
+                                              <Style>
+                                                <TextAlign>Left</TextAlign>
+                                              </Style>
                                             </Paragraph>
                                           </Paragraphs>
-                                          <rd:DefaultName>Textbox11</rd:DefaultName>
+                                          <rd:DefaultName>Textbox119</rd:DefaultName>
                                           <Style>
                                             <Border>
                                               <Color>LightGrey</Color>
                                               <Style>Solid</Style>
                                             </Border>
-                                            <LeftBorder>
-                                              <Style>None</Style>
-                                            </LeftBorder>
                                             <BackgroundColor>#e8f1ff</BackgroundColor>
+                                            <VerticalAlign>Middle</VerticalAlign>
                                             <PaddingLeft>2pt</PaddingLeft>
                                             <PaddingRight>2pt</PaddingRight>
                                             <PaddingTop>2pt</PaddingTop>
@@ -5058,7 +5098,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                             <Paragraph>
                                               <TextRuns>
                                                 <TextRun>
-                                                  <Value />
+                                                  <Value>=Fields!FormulaCheck.Value</Value>
                                                   <Style>
                                                     <FontFamily>Arial</FontFamily>
                                                   </Style>
@@ -5074,13 +5114,13 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                               <Style>Solid</Style>
                                             </Border>
                                             <TopBorder>
-                                              <Style>None</Style>
+                                              <Width>1pt</Width>
                                             </TopBorder>
                                             <BottomBorder>
-                                              <Style>None</Style>
+                                              <Width>1pt</Width>
                                             </BottomBorder>
                                             <LeftBorder>
-                                              <Style>None</Style>
+                                              <Width>1pt</Width>
                                             </LeftBorder>
                                             <PaddingLeft>2pt</PaddingLeft>
                                             <PaddingRight>2pt</PaddingRight>
@@ -5103,7 +5143,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <TablixMembers>
                                 <TablixMember>
                                   <TablixHeader>
-                                    <Size>11.30683in</Size>
+                                    <Size>5.11361in</Size>
                                     <CellContents>
                                       <Textbox Name="Textbox122">
                                         <CanGrow>true</CanGrow>
@@ -5157,7 +5197,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                                     </SortExpression>
                                   </SortExpressions>
                                   <TablixHeader>
-                                    <Size>11.30683in</Size>
+                                    <Size>5.11361in</Size>
                                     <CellContents>
                                       <Textbox Name="Columna5">
                                         <CanGrow>true</CanGrow>
@@ -5364,7 +5404,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
               </Filter>
             </Filters>
             <Top>7.19315in</Top>
-            <Left>0cm</Left>
             <Height>2.2in</Height>
             <Width>11.36933in</Width>
             <ZIndex>4</ZIndex>
@@ -6536,7 +6575,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsTablasCampos</DataSetName>
             <Top>2.86467cm</Top>
-            <Left>0cm</Left>
             <Height>0.65in</Height>
             <Width>14.97771in</Width>
             <ZIndex>5</ZIndex>
@@ -6738,6 +6776,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=iif(IsNothing(Fields!Descripcion.Value), "Red", "Transparent")</BackgroundColor>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -7613,7 +7652,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsTablasTriggers</DataSetName>
             <Top>30.00828cm</Top>
-            <Left>0cm</Left>
             <Height>1.25in</Height>
             <Width>11.41654in</Width>
             <ZIndex>6</ZIndex>
@@ -7831,7 +7869,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#d2ded7</BackgroundColor>
+                          <BackgroundColor>=iif(CountRows()=0,"Red", "#d2ded7")</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -8113,9 +8151,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <Height>1.25in</Height>
             <Width>11.41654in</Width>
             <ZIndex>7</ZIndex>
-            <Visibility>
-              <Hidden>=iif(CountRows()=0,true, false)</Hidden>
-            </Visibility>
             <Style>
               <Border>
                 <Style>None</Style>

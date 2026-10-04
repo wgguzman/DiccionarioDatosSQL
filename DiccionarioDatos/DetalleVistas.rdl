@@ -7,9 +7,9 @@
     </am:CreatedBy>
     <am:UpdatedBy>
       <am:Name>SSDTRS</am:Name>
-      <am:Version>17.9.34902.65</am:Version>
+      <am:Version>17.14.37628.2</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2024-05-23T19:56:41.8986511Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-10-04T15:33:51.8472272Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -603,6 +603,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>=iif(IsNothing(Fields!DescripcionColumna.Value), "Red", "Transparent")</BackgroundColor>
                             <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
@@ -610,6 +611,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -1271,7 +1273,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             </TablixRowHierarchy>
             <DataSetName>dsVistasCampos</DataSetName>
             <Height>0.95in</Height>
-            <Width>11.31714in</Width>
+            <Width>11.31716in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1483,7 +1485,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
                             <Color>LightGrey</Color>
                             <Style>Solid</Style>
                           </Border>
-                          <BackgroundColor>#d2ded7</BackgroundColor>
+                          <BackgroundColor>=iif(CountRows()=0,"Red", "#d2ded7")</BackgroundColor>
                           <PaddingLeft>2pt</PaddingLeft>
                           <PaddingRight>2pt</PaddingRight>
                           <PaddingTop>2pt</PaddingTop>
@@ -1765,9 +1767,6 @@ DROP TABLE #DiccionarioTemp;</CommandText>
             <Height>1.25in</Height>
             <Width>11.31714in</Width>
             <ZIndex>1</ZIndex>
-            <Visibility>
-              <Hidden>=iif(CountRows()=0,true, false)</Hidden>
-            </Visibility>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1778,7 +1777,7 @@ DROP TABLE #DiccionarioTemp;</CommandText>
         <Height>2.48377in</Height>
         <Style />
       </Body>
-      <Width>11.31714in</Width>
+      <Width>11.31716in</Width>
       <Page>
         <PageHeight>8.5in</PageHeight>
         <PageWidth>11in</PageWidth>
